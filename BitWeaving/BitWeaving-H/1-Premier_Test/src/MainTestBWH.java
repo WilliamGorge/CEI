@@ -27,8 +27,8 @@ public class MainTestBWH {
 		
 		/*************** Exemple sur une colonne de chiffres aléatoires ************/
 		if(example == 0) {
-			int k = 3;
-			int w = 8;
+			int k = 16;
+			int w = 64;
 			int N = w/(k+1);
 			int column_length = 10;
 			
@@ -44,12 +44,12 @@ public class MainTestBWH {
 			BWH_Segment[] column_out = BWH.getColumn();
 			
 			// Affichage
-			System.out.println("\nProcessor words: ");
+			System.out.println("\nProcessor words: \n");
 			for(int n = 0; n < column_out.length; ++n) {
 				System.out.println("	Segment" + (n+1));
 				BWH_Segment s = column_out[n];
 				for(int i = 0; i<s.getProcessorWords().length; ++i) {
-					System.out.println("	v" + (i+1)+ ": " + longtobyteString(s.getProcessorWords()[i]).substring(64-N*(k+1)));
+					System.out.println("	" + longtobyteString(s.getProcessorWords()[i]).substring(64-w));
 				}
 				System.out.println("");
 			}
