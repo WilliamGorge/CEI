@@ -1,10 +1,14 @@
 *.class
 *.snap
 *savedIndexNames.txt
+*.png
 *.prefs
 *.index
+*.xml
 *.csv
 *.history*
+*.version
+*.dat
 
 # Package Files #
 *.jar
