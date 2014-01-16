@@ -1,5 +1,5 @@
 
-public class MainTestHBP {
+public class MainTestBWH {
 
 	/**
 	 * @param args: Nothing (yet)

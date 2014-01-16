@@ -1,6 +1,8 @@
 *.class
 *.snap
-*SavedIndexNames.txt
+*savedIndexNames.txt
+*.prefs
+*.index
 *.csv
 *.history*
 
