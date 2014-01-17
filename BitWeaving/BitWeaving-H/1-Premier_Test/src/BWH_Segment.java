@@ -34,12 +34,13 @@ public class BWH_Segment {
 		// Itteration on the processor words
 		for(i=0; i < Ls/N; ++i) {
 			v[i] = column_segement[i];
+			// Itteration on the data in one processor word
 			for(j=1; j < N ; ++j) {
 				v[i] <<= k+1;
 				v[i] |= column_segement[i+j*Ls/N];
 			}
 			// Let us do some zero padding
-			if(N*(k+1) < w) v[i] <<= w - N*(k+1);
+			if(N*(k+1) < w) v[i] <<= (w - N*(k+1));
 		}
 	}
 	

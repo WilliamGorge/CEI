@@ -28,12 +28,19 @@ public class MainTestBWH {
 		
 		/*************** Exemple sur une colonne de chiffres alŽatoires ************/
 		if(example == 0) {
-			int cst = 2;
-			int k = 3;
+			int cst = 3;
+			int k = 5;
 			int w = 8;
 			int N = w/(k+1);
 			int Ls = N*(k+1);
 			int column_length = 10;
+			
+			System.out.println("cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls + "\n");
+
+			// Cumpute stuff for display
+			int NbFullSegments = column_length/Ls;
+			int rest = column_length % Ls;
+			System.out.println("\nNbFullSegments=" + NbFullSegments + "  rest=" + rest + "\n");
 			
 			long[] column = new long[column_length];
 			
@@ -42,6 +49,7 @@ public class MainTestBWH {
 				column[i] = (long) (Math.random()*Math.pow(2, k));
 				System.out.println("	" + longtobitsString(column[i]).substring(64-k));
 			}
+			
 			
 			BitWeavingH BWH = new BitWeavingH(column,k,w);
 			BWH_Segment[] column_out = BWH.getColumn();
@@ -57,12 +65,41 @@ public class MainTestBWH {
 				System.out.println("");
 			}
 			
+			// Result bit vector that we want to have
+			long[] BVoutWanted;
+			if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
+			else BVoutWanted = new long[NbFullSegments];
+			for(int n = 0; n < NbFullSegments; ++n) {
+				for(int i = 0; i < Ls; ++i) {
+					BVoutWanted[n]<<=1;
+					if(column[i+Ls*n] < cst) {
+						BVoutWanted[n] |= 1;
+					}
+				}
+			}
+			if(rest>0) {
+				for(int i = 0; i < rest; ++i) {
+					BVoutWanted[NbFullSegments]<<=1;
+					if(column[i+Ls*NbFullSegments] < cst) {
+						BVoutWanted[NbFullSegments] |= 1;
+					}
+				}
+			}
+			
 			// Requte
-			System.out.println("\nResults of query c<"+cst+": \n");
 			long[] BVout = BWH.is_column_less_than(cst);
-			for(int n = 0; n < column_out.length; ++n) {
+			
+			// Affichage
+			System.out.println("\nResults of query c<"+cst+": \n");
+			for(int n = 0; n < NbFullSegments; ++n) {
 				System.out.println("	Segment" + (n+1));
-				System.out.println("	" + longtobitsString(BVout[n]));
+				System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[n]).substring(64-Ls));
+				System.out.println("	Obtained:" + longtobitsString(BVout[n]).substring(64-Ls) + "\n");
+			}
+			if(rest>0) {
+				System.out.println("	Segment" + (NbFullSegments+1) + " (incomplete)");
+				System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[NbFullSegments]).substring(64-rest));
+				System.out.println("	Obtained:" + longtobitsString(BVout[NbFullSegments]).substring(64-rest) + "\n");
 			}
 			
 		}
