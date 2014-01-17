@@ -1,9 +1,10 @@
+import java.sql.Time;
 import java.util.Random;
 
 
 public class MainTestBWH {
 
-	public static String longtobyteString(long l){
+	public static String longtobitsString(long l){
 		String s = "";
 		for(int i = 0; i < Long.numberOfLeadingZeros(l); ++i) {
 			s += "0";
@@ -27,9 +28,11 @@ public class MainTestBWH {
 		
 		/*************** Exemple sur une colonne de chiffres alŽatoires ************/
 		if(example == 0) {
-			int k = 16;
-			int w = 64;
+			int cst = 2;
+			int k = 3;
+			int w = 8;
 			int N = w/(k+1);
+			int Ls = N*(k+1);
 			int column_length = 10;
 			
 			long[] column = new long[column_length];
@@ -37,21 +40,29 @@ public class MainTestBWH {
 			System.out.println("Column generated: ");
 			for(int i = 0; i < column.length; ++i) {
 				column[i] = (long) (Math.random()*Math.pow(2, k));
-				System.out.println("	" + longtobyteString(column[i]).substring(64-k));
+				System.out.println("	" + longtobitsString(column[i]).substring(64-k));
 			}
 			
 			BitWeavingH BWH = new BitWeavingH(column,k,w);
 			BWH_Segment[] column_out = BWH.getColumn();
 			
-			// Affichage
+			// Affichage des mots processeurs
 			System.out.println("\nProcessor words: \n");
 			for(int n = 0; n < column_out.length; ++n) {
 				System.out.println("	Segment" + (n+1));
 				BWH_Segment s = column_out[n];
 				for(int i = 0; i<s.getProcessorWords().length; ++i) {
-					System.out.println("	" + longtobyteString(s.getProcessorWords()[i]).substring(64-w));
+					System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
 				}
 				System.out.println("");
+			}
+			
+			// Requte
+			System.out.println("\nResults of query c<"+cst+": \n");
+			long[] BVout = BWH.is_column_less_than(cst);
+			for(int n = 0; n < column_out.length; ++n) {
+				System.out.println("	Segment" + (n+1));
+				System.out.println("	" + longtobitsString(BVout[n]));
 			}
 			
 		}
@@ -78,7 +89,7 @@ public class MainTestBWH {
 			
 			// Affichage
 			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobyteString(s.getProcessorWords()[i]).substring(64-8));
+				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
 			}
 		}
 			
@@ -99,7 +110,7 @@ public class MainTestBWH {
 			
 			// Affichage
 			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobyteString(s.getProcessorWords()[i]).substring(64-8));
+				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
 			}
 		}
 		// Example 3 (k = 2)
@@ -120,7 +131,7 @@ public class MainTestBWH {
 			
 			// Affichage
 			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobyteString(s.getProcessorWords()[i]).substring(64-8));
+				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
 			}
 		}
 		// Exemple 4 (comme example 1 mais avec un sŽgment incomplet (comme le segment 2 de la figure 3)
@@ -137,7 +148,7 @@ public class MainTestBWH {
 			
 			// Affichage
 			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobyteString(s.getProcessorWords()[i]).substring(64-8));
+				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
 			}
 		}
 

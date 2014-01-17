@@ -39,7 +39,7 @@ public class BWH_Segment {
 				v[i] |= column_segement[i+j*Ls/N];
 			}
 			// Let us do some zero padding
-			v[i] <<= w - N*(k+1);
+			if(N*(k+1) < w) v[i] <<= w - N*(k+1);
 		}
 	}
 	
