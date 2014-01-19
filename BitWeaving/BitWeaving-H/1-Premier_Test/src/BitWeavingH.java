@@ -37,7 +37,6 @@ public class BitWeavingH {
 		w = size_of_processor_word;
 		N = w/(k+1);
 		Ls = N*(k+1);
-		mask = 0;
 		for(int i = 0; i < N; ++i) {
 			mask <<= (k+1);
 			mask |= ( (long) Math.pow(2, k) ) - 1;
@@ -113,30 +112,46 @@ public class BitWeavingH {
 			ms >>= (w - N*(k+1)); // Deleting the zero padding
 			BVout[n] = ms;
 		}
-		// Special treat for the last incomplete segment: works with N = 2...
+		// Special treat for the last incomplete segment
 		if(rest > 0) {
+			
+			// Get the number of processor words
+			int NbProcessorWords = column[NbSegments-1].getProcessorWords().length;
+			
+			long BVoutLastCorrected = 0;
 			String SBVoutinit = longtobitsString(BVout[NbSegments - 1]);
 			
-			// Building a mask the obtain the right results
-			long maskright = ((long) (Math.pow(2, rest/N)) -1)<<k;
-			String Smaskright = longtobitsString(maskright);
+			// Building a mask the obtain the results
+			long maskresult = ((long) (Math.pow(2, NbProcessorWords)) - 1)<<(k+1-NbProcessorWords);
 			
-			// Building a mask the obtain the ledtresults
-			long maskleft =  maskright<<k+1;
-			String Smaskleft = longtobitsString(maskleft);
+			for(int i = 0; i < N; ++i) {
+
+				String Smaskresult = longtobitsString(maskresult);
+				
+				// Applying the mask to obtain the result
+				long result = BVout[NbSegments - 1] & maskresult;
+				String SresultBeforeShift = longtobitsString(result);	
+				
+				// Shifting the result to add it to the global result bit vector
+				// This formula is explained in the documentation
+				result >>=  k+1-NbProcessorWords + i*(k+1) - i*NbProcessorWords;
+				String SresultAfterShift = longtobitsString(result);	
 			
-			// Obtaining the result
-			long resleft = BVout[NbSegments - 1] & maskleft;
-			resleft >>= 2*k;
-			String Sresleft = longtobitsString(resleft);
+				// Adding the result to the global result bit vector
+				BVoutLastCorrected |= result;
+				String SBVoutLastCorrected = longtobitsString(BVoutLastCorrected);
+				
+				// Shifting the mask
+				maskresult <<= k+1;
+			}
 			
-			long resright = BVout[NbSegments - 1] & maskright;
-			resright >>=  k;
-			String Sresright = longtobitsString(resright);
+			// Deleting the wrong results due the the added "0" data
+			BVoutLastCorrected >>= N*NbProcessorWords - rest;
 			
-			BVout[NbSegments - 1] = resleft | resright;
-			String SBVoutfinal = longtobitsString(BVout[NbSegments - 1]);
+			// Saving the result
+			BVout[NbSegments - 1] = BVoutLastCorrected;
 		}
+		String SBVoutfinal = longtobitsString(BVout[NbSegments - 1]);
 		return BVout;
 	}
 	

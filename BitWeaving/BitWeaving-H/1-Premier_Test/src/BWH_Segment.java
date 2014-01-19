@@ -26,18 +26,23 @@ public class BWH_Segment {
 		// Calclulating the number of data that you can fit in a processor word
 		int N = w/(k+1);
 		
+		// Calulating the number of processor words needed
+		int NbProcessorWords = Ls/N;
+		if(Ls != N*(k+1)) NbProcessorWords += 1;
+		
 		// Declaration of the array of processor words
-		v = new long[Ls/N];
+		v = new long[NbProcessorWords];
 		
 		// Making the processor words
 		int i,j;
 		// Itteration on the processor words
-		for(i=0; i < Ls/N; ++i) {
+		for(i=0; i < NbProcessorWords; ++i) {
 			v[i] = column_segement[i];
 			// Itteration on the data in one processor word
 			for(j=1; j < N ; ++j) {
 				v[i] <<= k+1;
-				v[i] |= column_segement[i+j*Ls/N];
+				// Adding zeros if we're outside of the column (can happen if we are at the last segment)
+				if(i+j*NbProcessorWords < Ls) v[i] |= column_segement[i+j*NbProcessorWords];
 			}
 			// Let us do some zero padding
 			if(N*(k+1) < w) v[i] <<= (w - N*(k+1));

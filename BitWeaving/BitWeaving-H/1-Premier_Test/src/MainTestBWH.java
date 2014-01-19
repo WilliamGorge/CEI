@@ -18,176 +18,181 @@ public class MainTestBWH {
 	 * @author William Gorge
 	 */
 	public static void main(String[] args) {
-		// TODO Remplir le tableau de zéros
-		// TODO Faire les requêtes test
+		// TODO Bug pour w > 63
+		// TODO Exception pour k = 32 et w = 64
 		
 		// Définit de quel test il s'agit
-		int example = 0;
+		int example = 1;	
 		
+		// Donne plus ou moins d'affichage
+		boolean display = true;
 		
+		// Initialisation variables de test (ces valeurs vont êtres modifiées suivant les exemples
+		int cst = 0;
+		int k = 0;
+		int w = 0;
+		int N = 0;
+		int Ls = 0;
+		int column_length = 0;
+		long[] column = null;
 		
-		/*************** Exemple sur une colonne de chiffres aléatoires ************/
-		if(example == 0) {
-			int cst = 3;
-			int k = 5;
-			int w = 8;
-			int N = w/(k+1);
-			int Ls = N*(k+1);
-			int column_length = 10;
-			
-			System.out.println("cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls + "\n");
-
-			// Cumpute stuff for display
-			int NbFullSegments = column_length/Ls;
-			int rest = column_length % Ls;
-			System.out.println("\nNbFullSegments=" + NbFullSegments + "  rest=" + rest + "\n");
-			
-			long[] column = new long[column_length];
-			
-			System.out.println("Column generated: ");
-			for(int i = 0; i < column.length; ++i) {
-				column[i] = (long) (Math.random()*Math.pow(2, k));
-				System.out.println("	" + longtobitsString(column[i]).substring(64-k));
-			}
-			
-			
-			BitWeavingH BWH = new BitWeavingH(column,k,w);
-			BWH_Segment[] column_out = BWH.getColumn();
-			
-			// Affichage des mots processeurs
-			System.out.println("\nProcessor words: \n");
-			for(int n = 0; n < column_out.length; ++n) {
-				System.out.println("	Segment" + (n+1));
-				BWH_Segment s = column_out[n];
-				for(int i = 0; i<s.getProcessorWords().length; ++i) {
-					System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
-				}
-				System.out.println("");
-			}
-			
-			// Result bit vector that we want to have
-			long[] BVoutWanted;
-			if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
-			else BVoutWanted = new long[NbFullSegments];
-			for(int n = 0; n < NbFullSegments; ++n) {
-				for(int i = 0; i < Ls; ++i) {
-					BVoutWanted[n]<<=1;
-					if(column[i+Ls*n] < cst) {
-						BVoutWanted[n] |= 1;
-					}
-				}
-			}
-			if(rest>0) {
-				for(int i = 0; i < rest; ++i) {
-					BVoutWanted[NbFullSegments]<<=1;
-					if(column[i+Ls*NbFullSegments] < cst) {
-						BVoutWanted[NbFullSegments] |= 1;
-					}
-				}
-			}
-			
-			// Requête
-			long[] BVout = BWH.is_column_less_than(cst);
-			
-			// Affichage
-			System.out.println("\nResults of query c<"+cst+": \n");
-			for(int n = 0; n < NbFullSegments; ++n) {
-				System.out.println("	Segment" + (n+1));
-				System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[n]).substring(64-Ls));
-				System.out.println("	Obtained:" + longtobitsString(BVout[n]).substring(64-Ls) + "\n");
-			}
-			if(rest>0) {
-				System.out.println("	Segment" + (NbFullSegments+1) + " (incomplete)");
-				System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[NbFullSegments]).substring(64-rest));
-				System.out.println("	Obtained:" + longtobitsString(BVout[NbFullSegments]).substring(64-rest) + "\n");
-			}
-			
-		}
-				
-			
 		/********* Cas des exemples traités dans les slides ***************/
 		// Exemple 1 (k = 3)
 		if(example == 1) {
-			int k = 3;
-			int w = 8;
-			int N = w/(k+1);
-			int Ls = N*(k+1);
+			k = 3;
+			w = 8;
+			cst = 5;
+			N = w/(k+1);
+			Ls = N*(k+1);
+			column_length = 10;
+			column = new long[column_length];
 
-			long[] column_segment = new long[Ls];
-			column_segment[0] = 1;
-			column_segment[1] = 5;
-			column_segment[2] = 6;
-			column_segment[3] = 1;
-			column_segment[4] = 6;
-			column_segment[5] = 4;
-			column_segment[6] = 0;
-			column_segment[7] = 7;
-			BWH_Segment s = new BWH_Segment(column_segment, k, w);
-			
-			// Affichage
-			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
-			}
+			column[0] = 1;
+			column[1] = 5;
+			column[2] = 6;
+			column[3] = 1;
+			column[4] = 6;
+			column[5] = 4;
+			column[6] = 0;
+			column[7] = 7;
+			column[8] = 4;
+			column[9] = 3;
 		}
 			
 		// Exemple 2 (k = 4)
-		if(example == 2) {
-			int k = 4;
-			int w = 8;
-			int N = w/(k+1);
-			int Ls = N*(k+1);
-
-			long[] column_segment = new long[Ls];
-			column_segment[0] = 9;
-			column_segment[1] = 5;
-			column_segment[2] = 8;
-			column_segment[3] = 1;
-			column_segment[4] = 15;
-			BWH_Segment s = new BWH_Segment(column_segment, k, w);
+		else if(example == 2) {
+			k = 4;
+			w = 8;
+			cst = 5;
+			N = w/(k+1);
+			Ls = N*(k+1);
+			column_length = 10;
+			column = new long[column_length];
 			
-			// Affichage
-			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
-			}
+			column[0] = 9;
+			column[1] = 5;
+			column[2] = 8;
+			column[3] = 1;
+			column[4] = 15;
+			column[5] = 4;
+			column[6] = 11;
+			column[7] =	0;
+			column[8] = 3;
+			column[9] = 4;
+			
 		}
 		// Example 3 (k = 2)
-		if(example == 3) {
-			int k = 2;
-			int w = 8;
-			int N = w/(k+1);
-			int Ls = N*(k+1);
+		else if(example == 3) {
+			k = 2;
+			w = 8;
+			cst = 2;
+			N = w/(k+1);
+			Ls = N*(k+1);
+			column_length = 7;
+			column = new long[column_length];
 
-			long[] column_segment = new long[Ls];
-			column_segment[0] = 0;
-			column_segment[1] = 2;
-			column_segment[2] = 3;
-			column_segment[3] = 0;
-			column_segment[4] = 3;
-			column_segment[5] = 2;
-			BWH_Segment s = new BWH_Segment(column_segment, k, w);
+			column[0] = 0;
+			column[1] = 2;
+			column[2] = 3;
+			column[3] = 0;
+			column[4] = 3;
+			column[5] = 2;
+			column[6] = 1;
+		}
+		
+		/*************** Exemple sur une colonne de chiffres aléatoires (par défaut) ************/
+		else {
+			k = 8;
+			w = 32;
+			cst = 1;
+			N = w/(k+1);
+			Ls = N*(k+1);
+			column_length = 1000;
+			column = new long[column_length];
 			
-			// Affichage
-			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
+			for(int i = 0; i < column.length; ++i) {
+				column[i] = (long) (Math.random()*Math.pow(2, k));
 			}
 		}
-		// Exemple 4 (comme example 1 mais avec un ségment incomplet (comme le segment 2 de la figure 3)
-		if(example == 4) {
-			int k = 2;
-			int w = 8;
-			int N = w/(k+1);
-			int Ls = 2;
+		
+		System.out.println("cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
 
-			long[] column_segment = new long[Ls];
-			column_segment[0] = 4;
-			column_segment[1] = 3;
-			BWH_Segment s = new BWH_Segment(column_segment, k, w);
-			
-			// Affichage
-			for(int i = 0; i<s.getProcessorWords().length; ++i) {
-				System.out.println("v" + (i+1)+ ": " + longtobitsString(s.getProcessorWords()[i]).substring(64-8));
+		// Cumpute stuff for display
+		int NbFullSegments = column_length/Ls;
+		int rest = column_length % Ls;
+		System.out.println("\nNbFullSegments=" + NbFullSegments + "  rest=" + rest + "\n");
+		
+		// Display the column
+		if(display) {
+			System.out.println("Column: ");
+			for(int i = 0; i < column.length; ++i) {
+				System.out.println("	" + longtobitsString(column[i]).substring(64-k));
 			}
 		}
+		
+		BitWeavingH BWH = new BitWeavingH(column,k,w);
+		BWH_Segment[] column_out = BWH.getColumn();
+		
+		// Affichage des mots processeurs
+		if(display) System.out.println("\nProcessor words: \n");
+		for(int n = 0; n < column_out.length; ++n) {
+			if(display) System.out.println("	Segment" + (n+1));
+			BWH_Segment s = column_out[n];
+			for(int i = 0; i<s.getProcessorWords().length; ++i) {
+				if(display) System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
+			}
+			if(display) System.out.println("");
+		}
+		
+		// Result bit vector that we want to have
+		long[] BVoutWanted;
+		if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
+		else BVoutWanted = new long[NbFullSegments];
+		for(int n = 0; n < NbFullSegments; ++n) {
+			for(int i = 0; i < Ls; ++i) {
+				BVoutWanted[n]<<=1;
+				if(column[i+Ls*n] < cst) {
+					BVoutWanted[n] |= 1;
+				}
+			}
+		}
+		if(rest>0) {
+			for(int i = 0; i < rest; ++i) {
+				BVoutWanted[NbFullSegments]<<=1;
+				if(column[i+Ls*NbFullSegments] < cst) {
+					BVoutWanted[NbFullSegments] |= 1;
+				}
+			}
+		}
+		
+		// Requête
+		long[] BVout = BWH.is_column_less_than(cst);
+		
+		// Affichage
+		if(display) System.out.println("\nResults of query c<"+cst+": \n");
+		boolean testok = true;
+		long maskFullSegments = ( (long) Math.pow(2, Ls) ) - 1;
+		long maskIncompleteSegments = ( (long) Math.pow(2, rest) ) - 1;
+		for(int n = 0; n < NbFullSegments; ++n) {
+			long resultWanted = BVoutWanted[n] & maskFullSegments;
+			long result = BVout[n] & maskFullSegments;
+			if(display) System.out.println("	Segment" + (n+1));
+			if(display) System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[n]).substring(64-Ls));
+			if(display) System.out.println("	Obtained:" + longtobitsString(BVout[n]).substring(64-Ls) + "\n");
+			testok &= (result == resultWanted);
+		}
+		if(rest>0) {
+			int n = NbFullSegments;
+			if(display) System.out.println("	Segment" + (n+1) + " (incomplete)");
+			if(display) System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[n]).substring(64-rest));
+			if(display) System.out.println("	Obtained:" + longtobitsString(BVout[n]).substring(64-rest) + "\n");
+			testok &= ((BVoutWanted[n] & maskIncompleteSegments) == (BVout[n] & maskIncompleteSegments));
+		}
+		if(testok) System.out.println("-- Test sucessful --");
+		else  System.out.println("-- Test failed --");
+			
+				
+
 
 	}
 
