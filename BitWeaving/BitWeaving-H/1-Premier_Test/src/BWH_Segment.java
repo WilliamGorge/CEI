@@ -37,13 +37,18 @@ public class BWH_Segment {
 		int i,j;
 		// Itteration on the processor words
 		for(i=0; i < NbProcessorWords; ++i) {
-			v[i] = column_segement[i];
+			
+			// Adding zeros if we're outside of the column (can happen if we are at the last segment)
+			if(i < Ls) v[i] = column_segement[i];
+			else v[i] = 0;
+			
 			// Itteration on the data in one processor word
 			for(j=1; j < N ; ++j) {
 				v[i] <<= k+1;
 				// Adding zeros if we're outside of the column (can happen if we are at the last segment)
 				if(i+j*NbProcessorWords < Ls) v[i] |= column_segement[i+j*NbProcessorWords];
 			}
+			
 			// Let us do some zero padding
 			if(N*(k+1) < w) v[i] <<= (w - N*(k+1));
 		}

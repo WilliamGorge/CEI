@@ -2,7 +2,6 @@ import java.util.Vector;
 
 public class BitWeavingH {
 	
-	
 	private BWH_Segment[] column; // Colomn on witch perform the scan
 	private int k;  // Size of one data
 	private int w;  // Size of processor word
@@ -11,18 +10,6 @@ public class BitWeavingH {
 	private long mask; // Mask for the query less than
 	private int NbFullSegments; // Number of segments that contains Ls data
 	private int rest; // Number of data in the last segment
-	
-	private long f_less_than(long X, long Y) {
-		
-		// Computing the result
-		long Z = X ^ mask;
-		Z = Y + Z;
-		Z = Z  & (~mask);
-		
-		// return the result
-		return 	Z;
-		
-	}
 	
 	// Default constructor
 	public BitWeavingH() {
@@ -78,13 +65,30 @@ public class BitWeavingH {
 		
 	}
 	
-	// get the current column
+	// Get the current column
 	public BWH_Segment[] getColumn() {
 		return column;
 	}
 	
-	public long[] is_column_less_than(long cst) {
+	/*** CORE FUNCTION OF THE QUERY "C < cst" ***/
+	// This method is the f<(X,C) of the article and in the slides
+	// The algorithm is explained at "Figure 4" of the article
+	private long f_less_than(long X, long Y) {
 		
+		// Computing the result
+		long Z = X ^ mask;
+		Z = Y + Z;
+		Z = Z  & (~mask);
+		
+		// Return the result
+		return 	Z;
+	}
+	
+	/*** QUERY "C < cst" ***/
+	// Performs the query C < cst in the column
+	public long[] is_column_less_than(long cst) {
+	
+		/*** INITIALIATION ***/
 		// Number of segments
 		int NbSegments = column.length; // Warning: here column.length is the number of segments
 		
@@ -101,12 +105,14 @@ public class BitWeavingH {
 		// Let us do some zero padding to Y, in case
 		Y <<= (w-N*(k+1));
 		
+		/*** COMPUTING LOOP ***/
 		// Itterating on all the full the segments
+		// This algorith is the "Alogrithm 1" of the article
 		for(int n = 0; n < NbSegments; ++n) {
 			long ms = 0;
 			for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
 				long mw = f_less_than(column[n].getProcessorWords()[i], Y);
-				mw >>= i;
+				mw >>>= i;
 				ms |= mw;
 			}
 			ms >>= (w - N*(k+1)); // Deleting the zero padding
@@ -119,27 +125,21 @@ public class BitWeavingH {
 			int NbProcessorWords = column[NbSegments-1].getProcessorWords().length;
 			
 			long BVoutLastCorrected = 0;
-			String SBVoutinit = longtobitsString(BVout[NbSegments - 1]);
 			
 			// Building a mask the obtain the results
 			long maskresult = ((long) (Math.pow(2, NbProcessorWords)) - 1)<<(k+1-NbProcessorWords);
 			
 			for(int i = 0; i < N; ++i) {
-
-				String Smaskresult = longtobitsString(maskresult);
 				
 				// Applying the mask to obtain the result
 				long result = BVout[NbSegments - 1] & maskresult;
-				String SresultBeforeShift = longtobitsString(result);	
 				
 				// Shifting the result to add it to the global result bit vector
 				// This formula is explained in the documentation
 				result >>=  k+1-NbProcessorWords + i*(k+1) - i*NbProcessorWords;
-				String SresultAfterShift = longtobitsString(result);	
-			
+				
 				// Adding the result to the global result bit vector
 				BVoutLastCorrected |= result;
-				String SBVoutLastCorrected = longtobitsString(BVoutLastCorrected);
 				
 				// Shifting the mask
 				maskresult <<= k+1;
@@ -151,17 +151,7 @@ public class BitWeavingH {
 			// Saving the result
 			BVout[NbSegments - 1] = BVoutLastCorrected;
 		}
-		String SBVoutfinal = longtobitsString(BVout[NbSegments - 1]);
 		return BVout;
-	}
-	
-	public static String longtobitsString(long l){
-		String s = "";
-		for(int i = 0; i < Long.numberOfLeadingZeros(l); ++i) {
-			s += "0";
-		}
-		if(l != 0) s += Long.toBinaryString(l);
-		return s;
 	}
 	
 }

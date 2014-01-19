@@ -4,6 +4,11 @@ import java.util.Random;
 
 public class MainTestBWH {
 
+	/**
+	 * This is a little modification of Long.toBinaryString(long);
+	 * @param long l: long to convert to a string of bits
+	 * @author William Gorge
+	 */
 	public static String longtobitsString(long l){
 		String s = "";
 		for(int i = 0; i < Long.numberOfLeadingZeros(l); ++i) {
@@ -18,23 +23,30 @@ public class MainTestBWH {
 	 * @author William Gorge
 	 */
 	public static void main(String[] args) {
-		// TODO Bug pour w > 63
-		// TODO Exception pour k = 32 et w = 64
 		
+		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Définit de quel test il s'agit:
 		// Exemple 1, 2 et 3 sont les exemples des slides.
 		// L'exemple 1 correspond à celui de la publication
 		// Exemple 0 est sur une colonne de nombres aléatoires, on peut faire varier les paramères
-		int example = 1;	
+		int example = 0;	
 		
 		// Valeurs pour l'exemple 0
-		int k_0 = 8;
-		int w_0 = 32;
-		int cst_0 = 10;
-		int column_length_0 = 100;
+		int k_0 = 16;
+		int w_0 = 64;
+		int cst_0 = 5000;
+		int column_length_0 = 133;
 		
 		// Donne plus ou moins d'affichage
 		boolean display = true;
+		
+		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
+		
+		// Pour l'exemple 0, si k est trop grand
+		if(k_0 > w_0 - 1) k_0 = w_0 -1;
+		
+		// Pour l'exemple 0, si la constante donnée est invalide (ie. trop grande et ne peut être encodée sur k bits)
+		if(cst_0 > Math.pow(2, k_0) -1) cst_0 = (int) (Math.pow(2, k_0) - 1);
 		
 		// Initialisation variables de test (ces valeurs vont êtres modifiées suivant les exemples
 		int cst = 0;
@@ -109,7 +121,7 @@ public class MainTestBWH {
 			column[6] = 1;
 		}
 		
-		/*************** Exemple sur une colonne de chiffres aléatoires (par défaut) ************/
+		/*** Exemple sur une colonne de chiffres aléatoires (par défaut) ****/
 		else {
 			k = k_0;
 			w = w_0;
@@ -124,7 +136,8 @@ public class MainTestBWH {
 			}
 		}
 		
-		System.out.println("cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
+		/*** DISPLAY ***/
+		System.out.println("column_length=" + column_length + " cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
 
 		// Cumpute stuff for display
 		int NbFullSegments = column_length/Ls;
@@ -139,10 +152,13 @@ public class MainTestBWH {
 			}
 		}
 		
+		/*** INITIALIZATION OF THE BWH COLUMN ***/
 		BitWeavingH BWH = new BitWeavingH(column,k,w);
 		BWH_Segment[] column_out = BWH.getColumn();
 		
-		// Affichage des mots processeurs
+		
+		/*** DISPLAY ***/
+		// Processor words display
 		if(display) System.out.println("\nProcessor words: \n");
 		for(int n = 0; n < column_out.length; ++n) {
 			if(display) System.out.println("	Segment" + (n+1));
@@ -153,6 +169,7 @@ public class MainTestBWH {
 			if(display) System.out.println("");
 		}
 		
+		/*** COMPUTING THE RESULT THAT WE WANT TO HAVE (naive method) ***/ 
 		// Result bit vector that we want to have
 		long[] BVoutWanted;
 		if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
@@ -174,39 +191,57 @@ public class MainTestBWH {
 			}
 		}
 		
-		// Requête
+		
+		/******************************* HERE IS THE QUERY **********************************/
+
+		// Query
 		long[] BVout = BWH.is_column_less_than(cst);
 		
-		// Affichage
+		/******************************* END OF THE QUERY **********************************/
+		
+		
+		
+		/*** DISPLAY AND CHECKING THE RESULTS***/
+		
 		if(display) System.out.println("\nResults of query c<"+cst+": \n");
+		
+		// Boolean which indicates if the results obtained are correct
 		boolean testok = true;
+		
+		// Masks to get the relevent result for the full segments and for the last incomplete segment
 		long maskFullSegments = ( (long) Math.pow(2, Ls) ) - 1;
 		long maskIncompleteSegments = ( (long) Math.pow(2, rest) ) - 1;
+		
+		// Itteration on the segments
 		for(int n = 0; n < NbFullSegments; ++n) {
+			
+			// Obtaining the result of the segment
 			long resultWanted = BVoutWanted[n] & maskFullSegments;
 			long result = BVout[n] & maskFullSegments;
+			
+			// Display it
 			if(display) {
 				System.out.println("	Segment" + (n+1));
-				System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[n]).substring(64-Ls));
-				System.out.println("	Obtained:" + longtobitsString(BVout[n]).substring(64-Ls) + "\n");
+				System.out.println("	Wanted  :" + longtobitsString(resultWanted).substring(64-Ls));
+				System.out.println("	Obtained:" + longtobitsString(result).substring(64-Ls) + "\n");
 			}
+			// Checks the result
 			testok &= (result == resultWanted);
 		}
+		// Same for the last incomplete segment
 		if(rest>0) {
 			int n = NbFullSegments;
+			long resultWanted = BVoutWanted[n] & maskIncompleteSegments;
+			long result = BVout[n] & maskIncompleteSegments;
 			if(display) {
 				System.out.println("	Segment" + (n+1));
-				System.out.println("	Wanted  :" + longtobitsString(BVoutWanted[n]).substring(64-rest));
-				System.out.println("	Obtained:" + longtobitsString(BVout[n]).substring(64-rest) + "\n");
+				System.out.println("	Wanted  :" + longtobitsString(resultWanted).substring(64-rest));
+				System.out.println("	Obtained:" + longtobitsString(result).substring(64-rest) + "\n");
 			}
-			testok &= ((BVoutWanted[n] & maskIncompleteSegments) == (BVout[n] & maskIncompleteSegments));
+			// Checks the result
+			testok &= (result == resultWanted);
 		}
 		if(testok) System.out.println("-- Test sucessful --");
 		else  System.out.println("-- Test failed --");
-			
-				
-
-
 	}
-
 }
