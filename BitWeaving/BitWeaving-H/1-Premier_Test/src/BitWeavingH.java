@@ -164,5 +164,4 @@ public class BitWeavingH {
 		return s;
 	}
 	
-	
 }

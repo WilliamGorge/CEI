@@ -52,5 +52,4 @@ public class BWH_Segment {
 	public long[] getProcessorWords() {
 		return v;
 	}
-	
 }
