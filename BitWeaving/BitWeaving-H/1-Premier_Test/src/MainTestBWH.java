@@ -5,7 +5,8 @@ import java.util.Random;
 public class MainTestBWH {
 
 	/**
-	 * This is a little modification of Long.toBinaryString(long);
+	 * Returns the binary string with zeros of the long l
+	 * This is a little modification of Long.toBinaryString(long)
 	 * @param long l: long to convert to a string of bits
 	 * @author William Gorge
 	 */
@@ -19,11 +20,12 @@ public class MainTestBWH {
 	}
 	
 	/**
+	 * Main test function
 	 * @param args: Nothing (yet)
 	 * @author William Gorge
 	 */
 	public static void main(String[] args) {
-		
+				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Définit de quel test il s'agit:
 		// Exemple 1, 2 et 3 sont les exemples des slides.
@@ -32,12 +34,19 @@ public class MainTestBWH {
 		int example = 0;	
 		
 		// Valeurs pour l'exemple 0
+		// k_0 = taille d'une donnée en bits
+		// w_0 = largeur du mot processeur
+		// column_length_0 = taille de la colonne d'entiers aléatoires codés sur k_0 bits
+		// La requête est exprimée par queryName_0 pour la constante cst_0
+		// 	ex: pour avoir toutes les données inférieures à 5: cst_0 = 5 et queryName = "LESS THAN"
+		// Différentes requêtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO"
 		int k_0 = 16;
 		int w_0 = 64;
-		int cst_0 = 5000;
-		int column_length_0 = 133;
+		int cst_0 = 10000;
+		String queryName_0 = "LESS THAN OR EQUAL TO";
+		int column_length_0 = 1000;
 		
-		// Donne plus ou moins d'affichage
+		// Indique si la colonne, les mots processeurs et les vecteurs de bits résultats doivent être affichés
 		boolean display = true;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
@@ -55,6 +64,7 @@ public class MainTestBWH {
 		int N = 0;
 		int Ls = 0;
 		int column_length = 0;
+		String queryName = null;
 		long[] column = null;
 		
 		/********* Cas des exemples traités dans les slides ***************/
@@ -63,6 +73,7 @@ public class MainTestBWH {
 			k = 3;
 			w = 8;
 			cst = 5;
+			queryName = "LESS THAN";
 			N = w/(k+1);
 			Ls = N*(k+1);
 			column_length = 10;
@@ -85,6 +96,7 @@ public class MainTestBWH {
 			k = 4;
 			w = 8;
 			cst = 5;
+			queryName = "LESS THAN";
 			N = w/(k+1);
 			Ls = N*(k+1);
 			column_length = 10;
@@ -107,9 +119,10 @@ public class MainTestBWH {
 			k = 2;
 			w = 8;
 			cst = 2;
+			queryName = "LESS THAN";
 			N = w/(k+1);
 			Ls = N*(k+1);
-			column_length = 7;
+			column_length = 10;
 			column = new long[column_length];
 
 			column[0] = 0;
@@ -118,7 +131,10 @@ public class MainTestBWH {
 			column[3] = 0;
 			column[4] = 3;
 			column[5] = 2;
-			column[6] = 1;
+			column[6] = 0;
+			column[7] = 3;
+			column[8] = 2;
+			column[9] = 1;
 		}
 		
 		/*** Exemple sur une colonne de chiffres aléatoires (par défaut) ****/
@@ -126,6 +142,7 @@ public class MainTestBWH {
 			k = k_0;
 			w = w_0;
 			cst = cst_0;
+			queryName = queryName_0.toString();
 			N = w/(k+1);
 			Ls = N*(k+1);
 			column_length = column_length_0;
@@ -137,7 +154,7 @@ public class MainTestBWH {
 		}
 		
 		/*** DISPLAY ***/
-		System.out.println("column_length=" + column_length + " cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
+		System.out.println("column_length=" + column_length + " queryName=" + queryName + " cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
 
 		// Cumpute stuff for display
 		int NbFullSegments = column_length/Ls;
@@ -161,7 +178,7 @@ public class MainTestBWH {
 		// Processor words display
 		if(display) System.out.println("\nProcessor words: \n");
 		for(int n = 0; n < column_out.length; ++n) {
-			if(display) System.out.println("	Segment" + (n+1));
+			if(display) System.out.println("	Processor words for segment" + (n+1));
 			BWH_Segment s = column_out[n];
 			for(int i = 0; i<s.getProcessorWords().length; ++i) {
 				if(display) System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
@@ -177,16 +194,36 @@ public class MainTestBWH {
 		for(int n = 0; n < NbFullSegments; ++n) {
 			for(int i = 0; i < Ls; ++i) {
 				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] < cst) {
+				if(column[i+Ls*n] != cst && queryName == "DIFFERENT") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] == cst && queryName == "EQUAL") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] <= cst && queryName == "LESS THAN OR EQUAL TO") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] < cst && queryName == "LESS THAN") {
 					BVoutWanted[n] |= 1;
 				}
 			}
 		}
+		// Special treat for the last and incomplete segment
 		if(rest>0) {
+			int n = NbFullSegments;
 			for(int i = 0; i < rest; ++i) {
-				BVoutWanted[NbFullSegments]<<=1;
-				if(column[i+Ls*NbFullSegments] < cst) {
-					BVoutWanted[NbFullSegments] |= 1;
+				BVoutWanted[n]<<=1;
+				if(column[i+Ls*n] != cst && queryName == "DIFFERENT") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] == cst && queryName == "EQUAL") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] <= cst && queryName == "LESS THAN OR EQUAL TO") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] < cst && queryName == "LESS THAN") {
+					BVoutWanted[n] |= 1;
 				}
 			}
 		}
@@ -195,7 +232,13 @@ public class MainTestBWH {
 		/******************************* HERE IS THE QUERY **********************************/
 
 		// Query
-		long[] BVout = BWH.is_column_less_than(cst);
+		long[] BVout = null;
+		try {
+			BVout = BWH.query(queryName, cst);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
 		
 		/******************************* END OF THE QUERY **********************************/
 		
@@ -203,7 +246,7 @@ public class MainTestBWH {
 		
 		/*** DISPLAY AND CHECKING THE RESULTS***/
 		
-		if(display) System.out.println("\nResults of query c<"+cst+": \n");
+		if(display) System.out.println("\nResults of query " + queryName + " " + cst + ": \n");
 		
 		// Boolean which indicates if the results obtained are correct
 		boolean testok = true;
@@ -221,9 +264,9 @@ public class MainTestBWH {
 			
 			// Display it
 			if(display) {
-				System.out.println("	Segment" + (n+1));
-				System.out.println("	Wanted  :" + longtobitsString(resultWanted).substring(64-Ls));
-				System.out.println("	Obtained:" + longtobitsString(result).substring(64-Ls) + "\n");
+				System.out.println("	Results of query on segment" + (n+1));
+				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-Ls));
+				System.out.println("	Obtained: " + longtobitsString(result).substring(64-Ls) + "\n");
 			}
 			// Checks the result
 			testok &= (result == resultWanted);
@@ -234,9 +277,9 @@ public class MainTestBWH {
 			long resultWanted = BVoutWanted[n] & maskIncompleteSegments;
 			long result = BVout[n] & maskIncompleteSegments;
 			if(display) {
-				System.out.println("	Segment" + (n+1));
-				System.out.println("	Wanted  :" + longtobitsString(resultWanted).substring(64-rest));
-				System.out.println("	Obtained:" + longtobitsString(result).substring(64-rest) + "\n");
+				System.out.println("	Results of query segment" + (n+1));
+				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-rest));
+				System.out.println("	Obtained: " + longtobitsString(result).substring(64-rest) + "\n");
 			}
 			// Checks the result
 			testok &= (result == resultWanted);

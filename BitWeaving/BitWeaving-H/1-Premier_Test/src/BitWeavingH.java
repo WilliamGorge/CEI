@@ -1,3 +1,4 @@
+import java.security.InvalidParameterException;
 import java.util.Vector;
 
 public class BitWeavingH {
@@ -8,15 +9,23 @@ public class BitWeavingH {
 	private int N;	// Number of data that can fit in a processor word
 	private int Ls; // Length of one segment
 	private long mask; // Mask for the query less than
+	private long maskout; // Masks the bits outside the theorical processor word
 	private int NbFullSegments; // Number of segments that contains Ls data
 	private int rest; // Number of data in the last segment
 	
-	// Default constructor
+	/**
+	 * Default constructor
+	 */
 	public BitWeavingH() {
 		column = null;
 	}
 	
-	// Constructor with a column and a data size given
+	/**
+	 * Constructor with a column and a data size given
+	 * @param col column attatched to the object
+	 * @param size_of_one_data size (in bits) of one data in the column
+	 * @param size_of_processor_word size of the processor word
+	 */
 	public BitWeavingH(long[] col, int size_of_one_data, int size_of_processor_word) {
 		
 		// Instaciation of the arguments
@@ -30,6 +39,8 @@ public class BitWeavingH {
 		}
 		// Let us do some zero padding to this mask, in case
 		mask <<= (w-N*(k+1));
+		
+		maskout =  ( (long) Math.pow(2, w) ) - 1;
 		
 		NbFullSegments = col.length/Ls;
 		rest = col.length % Ls;
@@ -65,12 +76,40 @@ public class BitWeavingH {
 		
 	}
 	
-	// Get the current column
+	/**
+	 * Gets the attatched column
+	 * @return column
+	 */
 	public BWH_Segment[] getColumn() {
 		return column;
 	}
 	
-	/*** CORE FUNCTION OF THE QUERY "C < cst" ***/
+	/*** CORE FUNCTION OF THE QUERY "X != cst" ***/
+	// This method is the f!=(X,C) of the article (3.2.2)
+	private long f_different(long X, long Y) {
+		
+		// Computing the result
+		long Z = (X ^ Y) + mask ;
+		Z = Z  & (~mask);
+		
+		// Return the result
+		return 	Z;
+	}
+	
+	/*** CORE FUNCTION OF THE QUERY "X = cst" ***/
+	// This method is the f=(X,C) of the article (3.2.2)
+	private long f_equal(long X, long Y) {
+		
+		// Computing the result
+		long Z = (X ^ Y) + mask;
+		Z = (~Z)  & (~mask) & maskout;
+		
+		// Return the result
+		return 	Z;
+	}
+	
+	
+	/*** CORE FUNCTION OF THE QUERY "X < cst" (used for X<= cst too since it is equivalent to X < cst+1) ***/
 	// This method is the f<(X,C) of the article and in the slides
 	// The algorithm is explained at "Figure 4" of the article
 	private long f_less_than(long X, long Y) {
@@ -84,9 +123,13 @@ public class BitWeavingH {
 		return 	Z;
 	}
 	
-	/*** QUERY "C < cst" ***/
-	// Performs the query C < cst in the column
-	public long[] is_column_less_than(long cst) {
+	/*** QUERY FUNCTION ***/
+	/**
+	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeavingH object
+	 * @throws InvalidParameterException
+	 * @author William Gorge
+	 */
+	public long[] query(String queryName, long cst) throws InvalidParameterException {
 	
 		/*** INITIALIATION ***/
 		// Number of segments
@@ -96,6 +139,7 @@ public class BitWeavingH {
 		long[] BVout = new long[NbSegments]; 
 		
 		// Construcion of the comparaison vector
+		if(queryName == "LESS THAN OR EQUAL TO") cst += 1; // x <= cst is equivalent to x < cst + 1
 		long Y = cst;
 		for(int i = 1; i < N; ++i) {
 			Y <<= k+1;
@@ -105,20 +149,50 @@ public class BitWeavingH {
 		// Let us do some zero padding to Y, in case
 		Y <<= (w-N*(k+1));
 		
-		/*** COMPUTING LOOP ***/
-		// Itterating on all the full the segments
+		/*** COMPUTING LOOPS (same for each query) ***/
+		// Itterating on all the segments
 		// This algorith is the "Alogrithm 1" of the article
-		for(int n = 0; n < NbSegments; ++n) {
-			long ms = 0;
-			for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
-				long mw = f_less_than(column[n].getProcessorWords()[i], Y);
-				mw >>>= i;
-				ms |= mw;
+		if(queryName == "DIFFERENT") {
+			for(int n = 0; n < NbSegments; ++n) {
+				long ms = 0;
+				for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
+					long mw = f_different(column[n].getProcessorWords()[i], Y);
+					mw >>>= i;
+					ms |= mw;
+				}
+				ms >>= (w - N*(k+1)); // Deleting the zero padding
+				BVout[n] = ms;
 			}
-			ms >>= (w - N*(k+1)); // Deleting the zero padding
-			BVout[n] = ms;
 		}
-		// Special treat for the last incomplete segment
+		else if(queryName == "EQUAL") {
+			for(int n = 0; n < NbSegments; ++n) {
+				long ms = 0;
+				for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
+					long mw = f_equal(column[n].getProcessorWords()[i], Y);
+					mw >>>= i;
+					ms |= mw;
+				}
+				ms >>= (w - N*(k+1)); // Deleting the zero padding
+				BVout[n] = ms;
+			}
+		}
+		else if(queryName == "LESS THAN" || queryName == "LESS THAN OR EQUAL TO") {
+			// We put LESS THAN and LESS THAN OR EQUAL TO in the same place since x <= cst is equivalent to x < cst + 1
+			// and we did cst +=1 if the request was LESS THAN OR EQUAL TO
+			for(int n = 0; n < NbSegments; ++n) {
+				long ms = 0;
+				for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
+					long mw = f_less_than(column[n].getProcessorWords()[i], Y);
+					mw >>>= i;
+					ms |= mw;
+				}
+				ms >>= (w - N*(k+1)); // Deleting the zero padding
+				BVout[n] = ms;
+			}
+		}
+		else throw new InvalidParameterException("\"" + queryName + "\"" + ": Invalid parameter for queryName");
+		
+		// Special post-treatment for the last incomplete segment
 		if(rest > 0) {
 			
 			// Get the number of processor words
@@ -153,5 +227,4 @@ public class BitWeavingH {
 		}
 		return BVout;
 	}
-	
 }

@@ -8,14 +8,21 @@ public class BWH_Segment {
 	private int w;	// Size of processor word
 	private int Ls; // Length of one segment
 	
-	// Default constructor
+	/**
+	 * Default constructor
+	 */
 	public BWH_Segment() {
 		k = 0;
 		w = 0;
 		v = null;
 	}
 	
-	// Real constructor
+	/** 
+	 * Constructs the segment given its elements in column_segment and other parameters
+	 * @param column_segement elements of the segment to create
+	 * @param size_of_one_data size (in bits) of one data in the column
+	 * @param size_of_processor_word size of the processor word
+	 */
 	public BWH_Segment(long[] column_segement, int size_of_one_data, int size_of_processor_word) {
 		
 		// Coping the arguments
@@ -54,6 +61,10 @@ public class BWH_Segment {
 		}
 	}
 	
+	/**
+	 * Gets the processor words for this segment
+	 * @return processor words
+	 */
 	public long[] getProcessorWords() {
 		return v;
 	}
