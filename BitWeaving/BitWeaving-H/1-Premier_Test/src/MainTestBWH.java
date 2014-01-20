@@ -149,7 +149,7 @@ public class MainTestBWH {
 			column = new long[column_length];
 			
 			for(int i = 0; i < column.length; ++i) {
-				column[i] = (long) (Math.random()*Math.pow(2, k));
+				column[i] = (long) (Math.random()*Math.pow(2, k) - 1);
 			}
 		}
 		
