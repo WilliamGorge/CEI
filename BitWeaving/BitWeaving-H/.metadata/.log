@@ -81,3 +81,13 @@ java.lang.IllegalArgumentException: Document path /1-Premier_Test/src/MainTestBW
 	at org.eclipse.jdt.internal.core.search.indexing.IndexManager$1.execute(IndexManager.java:734)
 	at org.eclipse.jdt.internal.core.search.processing.JobManager.run(JobManager.java:401)
 	at java.lang.Thread.run(Thread.java:695)
+!SESSION 2014-01-20 09:49:15.174 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-01-20 09:49:44.610
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
