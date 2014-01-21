@@ -1,5 +1,4 @@
 import java.security.InvalidParameterException;
-import java.util.Vector;
 
 public class BitWeavingH {
 	
@@ -140,6 +139,7 @@ public class BitWeavingH {
 		
 		// Construcion of the comparaison vector
 		if(queryName == "LESS THAN OR EQUAL TO") cst += 1; // x <= cst is equivalent to x < cst + 1
+		if(queryName == "GREATER THAN OR EQUAL TO") cst -= 1; // x >= cst is equivalent to x > cst - 1
 		long Y = cst;
 		for(int i = 1; i < N; ++i) {
 			Y <<= k+1;
@@ -183,6 +183,20 @@ public class BitWeavingH {
 				long ms = 0;
 				for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
 					long mw = f_less_than(column[n].getProcessorWords()[i], Y);
+					mw >>>= i;
+					ms |= mw;
+				}
+				ms >>= (w - N*(k+1)); // Deleting the zero padding
+				BVout[n] = ms;
+			}
+		}
+		else if(queryName == "GREATER THAN" || queryName == "GREATER THAN OR EQUAL TO") {
+			// We put LESS THAN and LESS THAN OR EQUAL TO in the same place since x <= cst is equivalent to x < cst + 1
+			// and we did cst +=1 if the request was LESS THAN OR EQUAL TO
+			for(int n = 0; n < NbSegments; ++n) {
+				long ms = 0;
+				for(int i = 0; i < column[n].getProcessorWords().length; ++i) { // Warning: column[n].getProcessorWords().length returns the number of processor words for one segment
+					long mw = f_less_than(Y, column[n].getProcessorWords()[i]);
 					mw >>>= i;
 					ms |= mw;
 				}

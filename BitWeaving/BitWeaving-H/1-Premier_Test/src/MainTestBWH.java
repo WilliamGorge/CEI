@@ -1,7 +1,3 @@
-import java.sql.Time;
-import java.util.Random;
-
-
 public class MainTestBWH {
 
 	/**
@@ -39,23 +35,24 @@ public class MainTestBWH {
 		// column_length_0 = taille de la colonne d'entiers aléatoires codés sur k_0 bits
 		// La requête est exprimée par queryName_0 pour la constante cst_0
 		// 	ex: pour avoir toutes les données inférieures à 5: cst_0 = 5 et queryName = "LESS THAN"
-		// Différentes requêtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO"
-		int k_0 = 16;
+		// Différentes requêtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
+		int k_0 = 32;
 		int w_0 = 64;
-		int cst_0 = 10000;
-		String queryName_0 = "LESS THAN OR EQUAL TO";
-		int column_length_0 = 1000;
+		int cst_0 = 30000;
+		String queryName_0 = "LESS THAN";
+		int column_length_0 = 3000000;
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits résultats doivent être affichés
-		boolean display = true;
+		// Si à faux, les segments (mots processeurs et résultats) donnant un résultat incorrect seront quand même affichés
+		boolean display = false;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
 		
 		// Pour l'exemple 0, si k est trop grand
-		if(k_0 > w_0 - 1) k_0 = w_0 -1;
+		if(k_0 > w_0 - 1) k_0 = w_0 - 1;
 		
 		// Pour l'exemple 0, si la constante donnée est invalide (ie. trop grande et ne peut être encodée sur k bits)
-		if(cst_0 > Math.pow(2, k_0) -1) cst_0 = (int) (Math.pow(2, k_0) - 1);
+		if(cst_0 > Math.pow(2, k_0) - 1) cst_0 = (int) (Math.pow(2, k_0) - 1);
 		
 		// Initialisation variables de test (ces valeurs vont êtres modifiées suivant les exemples
 		int cst = 0;
@@ -149,12 +146,12 @@ public class MainTestBWH {
 			column = new long[column_length];
 			
 			for(int i = 0; i < column.length; ++i) {
-				column[i] = (long) (Math.random()*Math.pow(2, k) - 1);
+				column[i] = (long) (Math.random()*(Math.pow(2, k) - 1));
 			}
 		}
 		
 		/*** DISPLAY ***/
-		System.out.println("column_length=" + column_length + " queryName=" + queryName + " cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
+		System.out.println("column_length=" + column_length + " queryName=\"" + queryName + "\" cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
 
 		// Cumpute stuff for display
 		int NbFullSegments = column_length/Ls;
@@ -206,6 +203,12 @@ public class MainTestBWH {
 				else if(column[i+Ls*n] < cst && queryName == "LESS THAN") {
 					BVoutWanted[n] |= 1;
 				}
+				else if(column[i+Ls*n] > cst && queryName == "GREATER THAN") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] >= cst && queryName == "GREATER THAN OR EQUAL TO") {
+					BVoutWanted[n] |= 1;
+				}
 			}
 		}
 		// Special treat for the last and incomplete segment
@@ -225,9 +228,18 @@ public class MainTestBWH {
 				else if(column[i+Ls*n] < cst && queryName == "LESS THAN") {
 					BVoutWanted[n] |= 1;
 				}
+				else if(column[i+Ls*n] > cst && queryName == "GREATER THAN") {
+					BVoutWanted[n] |= 1;
+				}
+				else if(column[i+Ls*n] >= cst && queryName == "GREATER THAN OR EQUAL TO") {
+					BVoutWanted[n] |= 1;
+				}
+				
 			}
 		}
 		
+		// To measure the time elapsed
+		long timeBeforeQuery = System.nanoTime();
 		
 		/******************************* HERE IS THE QUERY **********************************/
 
@@ -242,6 +254,7 @@ public class MainTestBWH {
 		
 		/******************************* END OF THE QUERY **********************************/
 		
+		long timeElapsed = System.nanoTime() - timeBeforeQuery;
 		
 		
 		/*** DISPLAY AND CHECKING THE RESULTS***/
@@ -263,10 +276,19 @@ public class MainTestBWH {
 			long result = BVout[n] & maskFullSegments;
 			
 			// Display it
-			if(display) {
+			if(display || result != resultWanted) {
+				if(result != resultWanted) System.out.println("----- FAIL ----");
 				System.out.println("	Results of query on segment" + (n+1));
 				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-Ls));
 				System.out.println("	Obtained: " + longtobitsString(result).substring(64-Ls) + "\n");
+				if(result != resultWanted) {
+					System.out.println("	Processor words for segment" + (n+1));
+					BWH_Segment s = column_out[n];
+					for(int i = 0; i<s.getProcessorWords().length; ++i) {
+						System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
+					}
+					System.out.println("\n");
+				}
 			}
 			// Checks the result
 			testok &= (result == resultWanted);
@@ -276,15 +298,26 @@ public class MainTestBWH {
 			int n = NbFullSegments;
 			long resultWanted = BVoutWanted[n] & maskIncompleteSegments;
 			long result = BVout[n] & maskIncompleteSegments;
-			if(display) {
-				System.out.println("	Results of query segment" + (n+1));
-				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-rest));
-				System.out.println("	Obtained: " + longtobitsString(result).substring(64-rest) + "\n");
+			if(display || result != resultWanted) {
+				if(result != resultWanted) System.out.println("----- FAIL ----");
+				System.out.println("	Results of query on segment" + (n+1));
+				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-Ls));
+				System.out.println("	Obtained: " + longtobitsString(result).substring(64-Ls) + "\n");
+				if(result != resultWanted) {
+					System.out.println("	Processor words for segment" + (n+1));
+					BWH_Segment s = column_out[n];
+					for(int i = 0; i<s.getProcessorWords().length; ++i) {
+						System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
+					}
+					System.out.println("\n");
+				}
 			}
 			// Checks the result
 			testok &= (result == resultWanted);
 		}
 		if(testok) System.out.println("-- Test sucessful --");
 		else  System.out.println("-- Test failed --");
+
+		System.out.println("\nTime elapsed during query: " + timeElapsed + "ns");
 	}
 }
