@@ -33,7 +33,7 @@ public class MainTestBWH {
 		// Exemple 1, 2 et 3 sont les exemples des slides.
 		// L'exemple 1 correspond à celui de la publication
 		// Exemple 0 est sur une colonne de nombres aléatoires, on peut faire varier les paramères
-		int example = 0;	
+		int example = 1;	
 		
 		// Valeurs pour l'exemple 0
 		// k0 = taille d'une donnée en bits
@@ -50,7 +50,7 @@ public class MainTestBWH {
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits résultats doivent être affichés
 		// Si à faux, les segments (mots processeurs et résultats) donnant un résultat incorrect seront quand même affichés
-		boolean display = false;
+		boolean display = true;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
 		
@@ -332,8 +332,8 @@ public class MainTestBWH {
 			if(display || result != resultWanted) {
 				if(result != resultWanted) System.out.println("----- FAILURE ----");
 				System.out.println("	Results of query on last segment");
-				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-Ls));
-				System.out.println("	Obtained: " + longtobitsString(result).substring(64-Ls) + "\n");
+				System.out.println("	Wanted  : " + longtobitsString(resultWanted).substring(64-rest));
+				System.out.println("	Obtained: " + longtobitsString(result).substring(64-rest) + "\n");
 				if(result != resultWanted) {
 					System.out.println("	Processor words for the last segment");
 					BWH_Segment s = columnout[n];
