@@ -1,7 +1,8 @@
-#Mon Jan 20 16:29:30 CET 2014
+#Mon Jan 27 11:50:20 CET 2014
 content_assist_proposals_foreground=0,0,0
 spelling_locale_initialized=true
 content_assist_disabled_computers=org.eclipse.jdt.ui.javaAllProposalCategory\u0000org.eclipse.jdt.ui.javaNoTypeProposalCategory\u0000org.eclipse.jdt.ui.textProposalCategory\u0000org.eclipse.jdt.ui.javaTypeProposalCategory\u0000
+command=/System/Library/Frameworks/JavaVM.framework/Versions/1.4/Home/bin/javadoc
 org.eclipse.jdt.ui.text.templates_migrated=true
 useAnnotationsPrefPage=true
 eclipse.preferences.version=1
