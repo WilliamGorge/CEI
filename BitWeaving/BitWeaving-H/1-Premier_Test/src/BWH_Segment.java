@@ -37,7 +37,7 @@ public class BWH_Segment {
 		
 		// Calulating the number of processor words needed
 		int NbProcessorWords = Ls/N;
-		if(Ls != N*(k+1)) NbProcessorWords += 1;
+		if(Ls > N*NbProcessorWords) NbProcessorWords += 1;
 		
 		// Declaration of the array of processor words
 		v = new long[NbProcessorWords];
