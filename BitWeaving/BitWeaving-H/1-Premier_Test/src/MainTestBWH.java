@@ -20,11 +20,7 @@ public class MainTestBWH {
 	 * @param args: Nothing (yet)
 	 * @author William Gorge
 	 */
-	public static void main(String[] args) {
-		for(int ww = 32; ww < 64 ; ++ww) {
-			for(int kk = 1; kk < ww; ++kk) {
-			
-		
+	public static void main(String[] args) {		
 				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Nombre de queries ˆ faire ˆ la suite
@@ -46,11 +42,11 @@ public class MainTestBWH {
 		// La requte est exprimŽe par queryName0 pour la constante cst0
 		// 	ex: pour avoir toutes les donnŽes infŽrieures ˆ 5: cst0 = 5 et queryName = "LESS THAN"
 		// DiffŽrentes requtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
-		int k0 = kk;
-		int w0 = ww;
+		int k0 = 16;
+		int w0 = 64;
 		int cst0 = 4;
 		String queryName0 = "LESS THAN OR EQUAL TO";
-		int columnlength0 = 300000;
+		int columnlength0 = 3000000;
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits rŽsultats doivent tre affichŽs
 		// Si ˆ faux, les segments (mots processeurs et rŽsultats) donnant un rŽsultat incorrect seront quand mme affichŽs
@@ -353,13 +349,10 @@ public class MainTestBWH {
 		if(testok) System.out.println("-- Test sucessful --");
 		else  {
 			System.out.println("-- Test failed --");
-			break;
 		}
 
 		System.out.println("\n\n" + "Time elapsed during initialization ------------ " + timeElapsedInit + " ns\n");
 		System.out.println("Average time elapsed during a query ----------- " + (timeElapsedQueryTotal/(nbQueries - nbQueriesIgnored)) + " ns per query\n");
 		System.out.println("Average time per data elapsed during a query -- " + (((float) timeElapsedQueryTotal)/((float)(nbQueries - nbQueriesIgnored)*columnlength)) + " ns per query per data\n");
-		}
-	}
 	}
 }
