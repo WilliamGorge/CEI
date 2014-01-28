@@ -42,7 +42,7 @@ public class MainTestBWH {
 		// La requte est exprimŽe par queryName0 pour la constante cst0
 		// 	ex: pour avoir toutes les donnŽes infŽrieures ˆ 5: cst0 = 5 et queryName = "LESS THAN"
 		// DiffŽrentes requtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
-		int k0 = 16;
+		int k0 = 33;
 		int w0 = 64;
 		int cst0 = 4;
 		String queryName0 = "LESS THAN OR EQUAL TO";
@@ -241,6 +241,9 @@ public class MainTestBWH {
 		long[] BVoutWanted;
 		if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
 		else BVoutWanted = new long[NbFullSegments];
+		
+		// Measuring time
+		long timeNaiveMethod = System.nanoTime();
 		for(int n = 0; n < NbFullSegments; ++n) {
 			for(int i = 0; i < Ls; ++i) {
 				BVoutWanted[n]<<=1;
@@ -289,6 +292,7 @@ public class MainTestBWH {
 				}
 			}
 		}
+		timeNaiveMethod = System.nanoTime() - timeNaiveMethod;
 	
 		if(display) System.out.println("\nResults of query " + queryName + " " + cst + ": \n");
 		
@@ -351,8 +355,13 @@ public class MainTestBWH {
 			System.out.println("-- Test failed --");
 		}
 
-		System.out.println("\n\n" + "Time elapsed during initialization ------------ " + timeElapsedInit + " ns\n");
-		System.out.println("Average time elapsed during a query ----------- " + (timeElapsedQueryTotal/(nbQueries - nbQueriesIgnored)) + " ns per query\n");
-		System.out.println("Average time per data elapsed during a query -- " + (((float) timeElapsedQueryTotal)/((float)(nbQueries - nbQueriesIgnored)*columnlength)) + " ns per query per data\n");
+		System.out.println("\n\n" + 
+						   "Average time per data  elapsed during:\n\n" + 
+						   
+						   "	BWH Initialization -- " + ((float)timeElapsedInit)/((float)columnlength) + " ns per data\n" + 
+						   
+						   "	BWH Query ----------- " + (((float) timeElapsedQueryTotal)/((float)(nbQueries - nbQueriesIgnored)*columnlength)) + " ns per data\n" +
+						   
+						   "	Naive Query --------- " + ((float)timeNaiveMethod)/((float)columnlength) + " ns per data\n");
 	}
 }
