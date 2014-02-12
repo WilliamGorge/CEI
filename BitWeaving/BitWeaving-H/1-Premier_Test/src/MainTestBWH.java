@@ -1,3 +1,11 @@
+import java.util.Vector;
+
+/**
+ * Main test class for BitWeavingH.<br>
+ * This class contains the main functiobn that performs tests on the implemented BitWeavingH<br>
+ * @param args: Nothing (yet)
+ * @author William Gorge
+ */
 public class MainTestBWH {
 
 	/**
@@ -16,7 +24,8 @@ public class MainTestBWH {
 	}
 	
 	/**
-	 * Main test function
+	 * Main test function for BitWeavingH
+	 * Performs some tests on the classes implemented to check if it works good and to see the performance
 	 * @param args: Nothing (yet)
 	 * @author William Gorge
 	 */
@@ -24,16 +33,19 @@ public class MainTestBWH {
 				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Nombre de queries à faire à la suite
-		int nbQueries = 300;
+		int nbQueries = 2;
 		
 		// Nombre de queries à ignorer
-		int nbQueriesIgnored = 20;
+		int nbQueriesIgnored = 0;
+		
+		// Proba. d'ajouter une donnée à chaque query
+		float pbAdd = 1;
 		
 		// Définit de quel test il s'agit:
 		// Exemple 1, 2 et 3 sont les exemples des slides.
 		// L'exemple 1 correspond à celui de la publication
 		// Exemple 0 est sur une colonne de nombres aléatoires, on peut faire varier les paramères
-		int example = 0;	
+		int example = 1;	
 		
 		// Valeurs pour l'exemple 0
 		// k0 = taille d'une donnée en bits
@@ -42,15 +54,15 @@ public class MainTestBWH {
 		// La requête est exprimée par queryName0 pour la constante cst0
 		// 	ex: pour avoir toutes les données inférieures à 5: cst0 = 5 et queryName = "LESS THAN"
 		// Différentes requêtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
-		int k0 = 33;
+		int k0 = 32;
 		int w0 = 64;
-		int cst0 = 4;
+		int cst0 = 1000;
 		String queryName0 = "LESS THAN OR EQUAL TO";
 		int columnlength0 = 3000000;
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits résultats doivent être affichés
 		// Si à faux, les segments (mots processeurs et résultats) donnant un résultat incorrect seront quand même affichés
-		boolean display = false;
+		boolean display = true;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
 		
@@ -161,23 +173,28 @@ public class MainTestBWH {
 		long timeBeforeInit = System.nanoTime();
 		
 		/*** ENCODE THE QUERY TO AN INTEGER ***/
-		int query = 0;
-		if(queryName == "DIFFERENT") query = 1;
-		else if(queryName == "EQUAL") query = 2;
-		else if(queryName == "LESS THAN") query = 3;
-		else if(queryName == "LESS THAN OR EQUAL TO") query = 4;
-		else if(queryName == "GREATER THAN") query = 5;
-		else if(queryName == "GREATER THAN OR EQUAL TO") query = 6;
+		Query query = null;
+		if(queryName == "DIFFERENT") query = Query.DIFFERENT;
+		else if(queryName == "EQUAL") query = Query.EQUAL;
+		else if(queryName == "LESS THAN") query = Query.LESS_THAN;
+		else if(queryName == "LESS THAN OR EQUAL TO") query = Query.LESS_THAN_OR_EQUAL_TO;
+		else if(queryName == "GREATER THAN") query = Query.GREATER_THAN;
+		else if(queryName == "GREATER THAN OR EQUAL TO") query = Query.GREATER_THAN_OR_EQUAL_TO;
 		
 		/*** INITIALIZATION OF THE BWH COLUMN ***/
-		BitWeavingH BWH = new BitWeavingH(column,k,w);
-		BWH_Segment[] columnout = BWH.getColumn();
+		BitWeavingHInterface BWH = new BitWeavingH(column,k,w);
 		
 		// To measure the time elapsed during initialization
 		long timeElapsedInit = System.nanoTime() - timeBeforeInit;
 		
-		// To measure total time
+		// To measure total query time
 		long timeElapsedQueryTotal = 0;
+		
+		// To measure total add time
+		long timeElapsedAddTotal = 0;
+		
+		// To memorize the added data
+		Vector<Long> addedData = new Vector<Long>();
 		
 		// Result bit vector
 		long[] BVout = null;
@@ -186,6 +203,29 @@ public class MainTestBWH {
 			
 			// Query
 			try {
+				
+				// Adding a random number of data in the column
+				double toss = Math.random();
+				if(toss <= pbAdd) {
+					// Generate a random datum
+					long addedDatum = (long) (Math.random()*(Math.pow(2, k) - 1));
+					
+					// Measuring time
+					long timeBeforeAdd = System.nanoTime();
+					
+					/******************************* HERE IS ADD **********************************/
+					BWH.add(addedDatum);
+					
+					/******************************* END OF ADD **********************************/
+					
+					// Measuring time
+					if(i>=nbQueriesIgnored) timeElapsedAddTotal += System.nanoTime() - timeBeforeAdd;
+					
+					//Memorizing the data added to check if it works good
+					addedData.add(new Long(addedDatum));
+					
+				}
+
 			
 				// To measure the time elapsed during query
 				long timeBeforeQuery = System.nanoTime();
@@ -199,8 +239,9 @@ public class MainTestBWH {
 				
 				// To measure the time elapsed during query
 				long timeElapsedQuery = System.nanoTime() - timeBeforeQuery;
-				
+
 				if(i>=nbQueriesIgnored) timeElapsedQueryTotal += timeElapsedQuery;
+							
 			
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -208,12 +249,23 @@ public class MainTestBWH {
 			}
 		}
 		
+		// Updating the colomn with the data added
+		columnlength += addedData.size();
+		long[] newColumn = new long[columnlength];
 		
-		
+		for(int i = 0; i < column.length; ++i) {
+			newColumn[i] = column[i];
+		}
+		for(int i = column.length, j = 0; i < columnlength; ++i) {
+			newColumn[i] = addedData.get(j);
+			++j;
+		}
+		column = newColumn;
 		
 		/************************ DISPLAY AND CHECKING THE RESULTS**************************/
-		int NbFullSegments = BWH.getNbFullSegments();
-		int rest = BWH.getRest();
+		BWHSegment[] columnout = BWH.getColumn();
+		int NbFullSegments = BWH.size()/Ls;
+		int rest = BWH.size() - NbFullSegments*Ls;
 		System.out.println("nbQueries=" + nbQueries + " nbQueriesIgnored=" + nbQueriesIgnored + " columnlength=" + columnlength + " queryName=\"" + queryName + "\" query=" + query + " cst=" + cst + "  k=" + k + "  w="+ w + "  N=" + N + "  Ls=" + Ls);
 		System.out.println("\nNbFullSegments=" + NbFullSegments + "  rest=" + rest + "\n");
 		
@@ -229,7 +281,7 @@ public class MainTestBWH {
 		if(display) System.out.println("\nProcessor words: \n");
 		for(int n = 0; n < columnout.length; ++n) {
 			if(display) System.out.println("	Processor words for segment" + (n+1));
-			BWH_Segment s = columnout[n];
+			BWHSegment s = columnout[n];
 			for(int i = 0; i<s.getProcessorWords().length; ++i) {
 				if(display) System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
 			}
@@ -247,22 +299,22 @@ public class MainTestBWH {
 		for(int n = 0; n < NbFullSegments; ++n) {
 			for(int i = 0; i < Ls; ++i) {
 				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] != cst && query== 1) {
+				if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] == cst && query == 2) {
+				else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] < cst && query == 3) {
+				else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] <= cst && query == 4) {
+				else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] > cst && query == 5) {
+				else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] >= cst && query == 6) {
+				else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
 					BVoutWanted[n] |= 1;
 				}
 			}
@@ -272,22 +324,22 @@ public class MainTestBWH {
 			int n = NbFullSegments;
 			for(int i = 0; i < rest; ++i) {
 				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] != cst && query== 1) {
+				if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] == cst && query == 2) {
+				else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] < cst && query == 3) {
+				else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] <= cst && query == 4) {
+				else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] > cst && query == 5) {
+				else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
 					BVoutWanted[n] |= 1;
 				}
-				else if(column[i+Ls*n] >= cst && query == 6) {
+				else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
 					BVoutWanted[n] |= 1;
 				}
 			}
@@ -318,7 +370,7 @@ public class MainTestBWH {
 				System.out.println("	Obtained: " + longtobitsString(result).substring(64-Ls) + "\n");
 				if(result != resultWanted) {
 					System.out.println("	Processor words for segment" + (n+1));
-					BWH_Segment s = columnout[n];
+					BWHSegment s = columnout[n];
 					for(int i = 0; i<s.getProcessorWords().length; ++i) {
 						System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
 					}
@@ -340,7 +392,7 @@ public class MainTestBWH {
 				System.out.println("	Obtained: " + longtobitsString(result).substring(64-rest) + "\n");
 				if(result != resultWanted) {
 					System.out.println("	Processor words for the last segment");
-					BWH_Segment s = columnout[n];
+					BWHSegment s = columnout[n];
 					for(int i = 0; i<s.getProcessorWords().length; ++i) {
 						System.out.println("	" + longtobitsString(s.getProcessorWords()[i]).substring(64-w));
 					}
@@ -356,12 +408,17 @@ public class MainTestBWH {
 		}
 
 		System.out.println("\n\n" + 
-						   "Average time per data  elapsed during:\n\n" + 
+						   "Average time per data in column:\n\n" + 
 						   
-						   "	BWH Initialization -- " + ((float)timeElapsedInit)/((float)columnlength) + " ns per data\n" + 
+						   "	BWH Initialization -- " + ((float)timeElapsedInit)/((float)columnlength) + " ns per data in column\n" + 
+
+						   "	BWH Add one datum --- " + (((float) timeElapsedAddTotal)/((float)addedData.size()*columnlength)) + " ns per data in column\n" +
 						   
-						   "	BWH Query ----------- " + (((float) timeElapsedQueryTotal)/((float)(nbQueries - nbQueriesIgnored)*columnlength)) + " ns per data\n" +
+						   "	****\n" +
 						   
-						   "	Naive Query --------- " + ((float)timeNaiveMethod)/((float)columnlength) + " ns per data\n");
+						   "	BWH Query ----------- " + (((float) timeElapsedQueryTotal)/((float)(nbQueries - nbQueriesIgnored)*columnlength)) + " ns per data in column\n" +
+						   
+						   "	Naive Query --------- " + ((float)timeNaiveMethod)/((float)columnlength) + " ns per data in column\n");
+						   
 	}
 }
