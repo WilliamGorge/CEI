@@ -33,7 +33,7 @@ public class MainTestBWV {
 				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Nombre de queries à faire à la suite
-		int nbQueries = 20;
+		int nbQueries = 2;
 		
 		// Nombre de queries à ignorer
 		int nbQueriesIgnored = 0;
@@ -45,7 +45,7 @@ public class MainTestBWV {
 		// Exemple 1, 2 et 3 sont les exemples des slides.
 		// L'exemple 1 correspond à celui de la publication
 		// Exemple 0 est sur une colonne de nombres aléatoires, on peut faire varier les paramères
-		int example = 0;	
+		int example = 1;	
 		
 		// Valeurs pour l'exemple 0
 		// k0 = taille d'une donnée en bits
@@ -62,7 +62,7 @@ public class MainTestBWV {
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits résultats doivent être affichés
 		// Si à faux, les segments (mots processeurs et résultats) donnant un résultat incorrect seront quand même affichés
-		boolean display = false;
+		boolean display = true;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
 		
@@ -384,7 +384,7 @@ public class MainTestBWV {
 		if(rest>0) {
 			int n = NbFullSegments;
 			long resultWanted = BVoutWanted[n] & maskIncompleteSegments;
-			long result = BVout[n] & maskIncompleteSegments;
+			long result = (BVout[n] >>> (w-rest)) & maskIncompleteSegments; // ici bug de compatibilité avec Benoit!
 			if(display || result != resultWanted) {
 				if(result != resultWanted) System.out.println("----- FAILURE ----");
 				System.out.println("	Results of query on last segment");
