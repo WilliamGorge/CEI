@@ -64,7 +64,7 @@ public class BWVSegment
 	{
 		int i;
 		long mask, move = ( 1L << (k - 1) );
-		
+	 
 		for (i = 0; i < k; ++i)
 		{
 			mask = nb & move;

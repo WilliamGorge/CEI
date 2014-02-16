@@ -100,7 +100,7 @@ public class BitWeavingV implements BitWeavingVInterface
 				cstTab[i] = ~0;
 			else
 				cstTab[i] = 0;
-			
+		 
 			mask >>>= 1;
 			++i;
 		}
