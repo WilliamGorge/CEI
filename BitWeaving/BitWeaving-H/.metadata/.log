@@ -428,3 +428,13 @@ java.lang.RuntimeException: WARNING: Prevented recursive attempt to activate par
 
 !ENTRY org.eclipse.debug.core 4 125 2014-02-12 10:32:20.657
 !MESSAGE Invalid expression entry encountered while loading watch expressions. Expression text is empty.
+!SESSION 2014-02-17 00:39:21.995 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-02-17 00:39:48.649
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
