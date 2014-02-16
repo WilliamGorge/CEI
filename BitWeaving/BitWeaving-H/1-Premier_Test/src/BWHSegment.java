@@ -1,3 +1,4 @@
+
 /**
  * Class for the use of the BitWeavingH Method, more specifically for the segments.<br>
  * An instance of this class represents a segmement of data according to the BitWeaving method.<br>

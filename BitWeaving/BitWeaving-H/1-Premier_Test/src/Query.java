@@ -1,4 +1,4 @@
-
+// Enum for elementary queries
 public enum Query {
 		LESS_THAN,
 		GREATER_THAN,
