@@ -52,4 +52,7 @@ public interface BitWeavingHInterface {
 	 * @return column
 	 */
 	BWHSegment[] getColumn();
+
+
+	long[] complexQuery(String string);
 }	

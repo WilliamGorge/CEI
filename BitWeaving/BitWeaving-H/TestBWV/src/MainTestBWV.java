@@ -33,19 +33,19 @@ public class MainTestBWV {
 				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Nombre de queries à faire à la suite
-		int nbQueries = 2;
+		int nbQueries = 300;
 		
 		// Nombre de queries à ignorer
-		int nbQueriesIgnored = 0;
+		int nbQueriesIgnored = 20;
 		
 		// Proba. d'ajouter une donnée à chaque query
-		float pbAdd = 1;
+		double pbAdd = 0.5;
 		
 		// Définit de quel test il s'agit:
 		// Exemple 1, 2 et 3 sont les exemples des slides.
 		// L'exemple 1 correspond à celui de la publication
 		// Exemple 0 est sur une colonne de nombres aléatoires, on peut faire varier les paramères
-		int example = 1;	
+		int example = 0;	
 		
 		// Valeurs pour l'exemple 0
 		// k0 = taille d'une donnée en bits
@@ -54,15 +54,15 @@ public class MainTestBWV {
 		// La requête est exprimée par queryName0 pour la constante cst0
 		// 	ex: pour avoir toutes les données inférieures à 5: cst0 = 5 et queryName = "LESS THAN"
 		// Différentes requêtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
-		int k0 = 32;
+		int k0 = 16;
 		int w0 = 64;
-		int cst0 = 1000;
+		int cst0 = 100;
 		String queryName0 = "LESS THAN";
 		int columnlength0 = 3000000;
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits résultats doivent être affichés
 		// Si à faux, les segments (mots processeurs et résultats) donnant un résultat incorrect seront quand même affichés
-		boolean display = true;
+		boolean display = false;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
 		
@@ -293,58 +293,70 @@ public class MainTestBWV {
 		long[] BVoutWanted;
 		if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
 		else BVoutWanted = new long[NbFullSegments];
+		int count = 0;
+		long timeNaiveMethod = 0;
 		
-		// Measuring time
-		long timeNaiveMethod = System.nanoTime();
-		for(int n = 0; n < NbFullSegments; ++n) {
-			for(int i = 0; i < Ls; ++i) {
-				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
-				}
-			}
-		}
-		// Special treat for the last and incomplete segment
-		if(rest>0) {
-			int n = NbFullSegments;
-			for(int i = 0; i < rest; ++i) {
-				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
+		// Loop to warmup the JVM
+		for(int p = 0; p < nbQueries; ++p) {
+			
+			// Measuring time
+			long parseTimeNaiveMethod = System.nanoTime();
+			
+			for(int n = 0; n < NbFullSegments; ++n) {
+				for(int i = 0; i < Ls; ++i) {
+					BVoutWanted[n]<<=1;
+					if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
 				}
 			}
+			// Special treat for the last and incomplete segment
+			if(rest>0) {
+				int n = NbFullSegments;
+				for(int i = 0; i < rest; ++i) {
+					BVoutWanted[n]<<=1;
+					if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
+				}
+			}
+			if(p > nbQueriesIgnored) {
+				timeNaiveMethod += System.nanoTime() - parseTimeNaiveMethod;
+				++count;
+			}
 		}
-		timeNaiveMethod = System.nanoTime() - timeNaiveMethod;
+		// Norlalization
+		timeNaiveMethod = timeNaiveMethod/count;
 	
 		if(display) System.out.println("\nResults of query " + queryName + " " + cst + ": \n");
 		
@@ -353,7 +365,7 @@ public class MainTestBWV {
 		
 		// Masks to get the relevent result for the full segments and for the last incomplete segment
 		long maskFullSegments = ( (long) Math.pow(2, Ls) ) - 1;
-		long maskIncompleteSegments = ( (long) Math.pow(2, rest) ) - 1;
+		long maskIncompleteSegment = ( (long) Math.pow(2, rest) ) - 1;
 		
 		// Itteration on the segments
 		for(int n = 0; n < NbFullSegments; ++n) {
@@ -383,8 +395,8 @@ public class MainTestBWV {
 		// Same for the last incomplete segment
 		if(rest>0) {
 			int n = NbFullSegments;
-			long resultWanted = BVoutWanted[n] & maskIncompleteSegments;
-			long result = (BVout[n] >>> (w-rest)) & maskIncompleteSegments; // ici bug de compatibilité avec Benoit!
+			long resultWanted = BVoutWanted[n] & maskIncompleteSegment;
+			long result = BVout[n] & maskIncompleteSegment; // ici bug de compatibilité avec Benoit!
 			if(display || result != resultWanted) {
 				if(result != resultWanted) System.out.println("----- FAILURE ----");
 				System.out.println("	Results of query on last segment");

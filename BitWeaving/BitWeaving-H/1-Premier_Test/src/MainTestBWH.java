@@ -34,19 +34,19 @@ public class MainTestBWH {
 				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
 		// Nombre de queries ˆ faire ˆ la suite
-		int nbQueries = 2;
+		int nbQueries = 300;
 		
 		// Nombre de queries ˆ ignorer
-		int nbQueriesIgnored = 0;
+		int nbQueriesIgnored = 50;
 		
 		// Proba. d'ajouter une donnŽe ˆ chaque query
-		float pbAdd = 1;
+		float pbAdd = 0;
 		
 		// DŽfinit de quel test il s'agit:
 		// Exemple 1, 2 et 3 sont les exemples des slides.
 		// L'exemple 1 correspond ˆ celui de la publication
 		// Exemple 0 est sur une colonne de nombres alŽatoires, on peut faire varier les paramres
-		int example = 1;	
+		int example = 0;	
 		
 		// Valeurs pour l'exemple 0
 		// k0 = taille d'une donnŽe en bits
@@ -55,7 +55,7 @@ public class MainTestBWH {
 		// La requte est exprimŽe par queryName0 pour la constante cst0
 		// 	ex: pour avoir toutes les donnŽes infŽrieures ˆ 5: cst0 = 5 et queryName = "LESS THAN"
 		// DiffŽrentes requtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
-		int k0 = 32;
+		int k0 = 16;
 		int w0 = 64;
 		int cst0 = 1000;
 		String queryName0 = "LESS THAN OR EQUAL TO";
@@ -63,7 +63,7 @@ public class MainTestBWH {
 		
 		// Indique si la colonne, les mots processeurs et les vecteurs de bits rŽsultats doivent tre affichŽs
 		// Si ˆ faux, les segments (mots processeurs et rŽsultats) donnant un rŽsultat incorrect seront quand mme affichŽs
-		boolean display = true;
+		boolean display = false;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
 		
@@ -250,6 +250,8 @@ public class MainTestBWH {
 			}
 		}
 		
+		BWH.complexQuery("LESS THAN 1000 OR EQUAL 2000 AND DIFFERENT 0");
+		
 		// Updating the colomn with the data added
 		columnlength += addedData.size();
 		long[] newColumn = new long[columnlength];
@@ -295,58 +297,71 @@ public class MainTestBWH {
 		if(rest >0) BVoutWanted = new long[NbFullSegments + 1];
 		else BVoutWanted = new long[NbFullSegments];
 		
-		// Measuring time
-		long timeNaiveMethod = System.nanoTime();
-		for(int n = 0; n < NbFullSegments; ++n) {
-			for(int i = 0; i < Ls; ++i) {
-				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
-				}
-			}
-		}
-		// Special treat for the last and incomplete segment
-		if(rest>0) {
-			int n = NbFullSegments;
-			for(int i = 0; i < rest; ++i) {
-				BVoutWanted[n]<<=1;
-				if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
-					BVoutWanted[n] |= 1;
-				}
-				else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
-					BVoutWanted[n] |= 1;
+		int count = 0;
+		long timeNaiveMethod = 0;
+		
+		// Loop to warmup the JVM
+		for(int p = 0; p < nbQueries; ++p) {
+			
+			// Measuring time
+			long parseTimeNaiveMethod = System.nanoTime();
+			
+			for(int n = 0; n < NbFullSegments; ++n) {
+				for(int i = 0; i < Ls; ++i) {
+					BVoutWanted[n]<<=1;
+					if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
 				}
 			}
+			// Special treat for the last and incomplete segment
+			if(rest>0) {
+				int n = NbFullSegments;
+				for(int i = 0; i < rest; ++i) {
+					BVoutWanted[n]<<=1;
+					if(column[i+Ls*n] != cst && query== Query.DIFFERENT) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] == cst && query == Query.EQUAL) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] < cst && query == Query.LESS_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] <= cst && query == Query.LESS_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] > cst && query == Query.GREATER_THAN) {
+						BVoutWanted[n] |= 1;
+					}
+					else if(column[i+Ls*n] >= cst && query == Query.GREATER_THAN_OR_EQUAL_TO) {
+						BVoutWanted[n] |= 1;
+					}
+				}
+			}
+			if(p > nbQueriesIgnored) {
+				timeNaiveMethod += System.nanoTime() - parseTimeNaiveMethod;
+				++count;
+			}
 		}
-		timeNaiveMethod = System.nanoTime() - timeNaiveMethod;
-	
+		// Norlalization
+		timeNaiveMethod = timeNaiveMethod/count;
+			
 		if(display) System.out.println("\nResults of query " + queryName + " " + cst + ": \n");
 		
 		// Boolean which indicates if the results obtained are correct

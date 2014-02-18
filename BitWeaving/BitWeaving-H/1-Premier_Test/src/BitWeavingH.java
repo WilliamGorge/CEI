@@ -158,6 +158,127 @@ public class BitWeavingH implements BitWeavingHInterface {
 		return nbData;
 	}
 	
+	/**
+	 * Decodes complex queries into elementary queries and performs them on the column of the instance of the BitWeavingH object.<br>
+	 * Decodes the String "query" into elements of the enum Query.<br>
+	 * Returns the result bit vector<br>
+	 * @param query: String that represents the complex query ej: "LESS THAN 1000 OR EQUAL 2000 AND DIFFERENT 0"
+	 * @throws InvalidParameterException
+	 * @author William Gorge and Benoit Sordet
+	 */
+	public long[] complexQuery(String query)  throws InvalidParameterException {
+		
+		// Result bit vector
+		long[] BVout = null;
+		
+		// Operator for the next instruction
+		Operator op = null;
+		
+		// Query of the next instruction
+		Query q = null;
+		
+		// Constant of the next instrution
+		Integer cst = null;
+		
+		// Index of this constant in the query string
+		int cstIndex = 0;
+		
+		// Boolean that indicates if it is the first instruction
+		boolean first = true;
+		
+		// Splits the query into sets of instructions. The separator is the constants numbers given
+		String[] instructions = query.split("\\d+");
+		
+		// Itterating on this instructions
+		for(int i = 0; i < instructions.length; ++i){
+			
+			cstIndex += instructions[i].length();
+		
+			// Decoding operator
+			if(instructions[i].startsWith(" AND") && !first) {
+				op = Operator.AND;
+			}
+			else if(instructions[i].startsWith(" OR") && !first) {
+				op = Operator.OR;
+			}
+			
+			// Decoding query
+			if(instructions[i].contains("DIFFERENT")) {
+				q = Query.DIFFERENT;
+			}
+			else if(instructions[i].contains("EQUAL")) {
+				q = Query.EQUAL;
+			}
+			else if(instructions[i].contains("LESS THAN")) {
+				q = Query.LESS_THAN;
+			}
+			else if(instructions[i].contains("LESS THAN OR EQUAL TO")) {
+				q = Query.LESS_THAN_OR_EQUAL_TO;
+			}
+			else if(instructions[i].contains("GREATER THAN")) {
+				q = Query.GREATER_THAN;
+			}
+			else if(instructions[i].contains("GREATER THAN OR EQUAL TO")) {
+				q = Query.GREATER_THAN_OR_EQUAL_TO;
+			}
+			else throw new InvalidParameterException("\"" + instructions[i] + "\"" + ": Syntax error for query");
+			
+			// Find the constant with its begin and end index in the String
+			int endCstIndex = query.length();
+			if(i+1 < instructions.length) endCstIndex = query.indexOf(instructions[i+1]);
+			
+			cst = Integer.decode(query.substring(cstIndex, endCstIndex));
+			
+			cstIndex += cst.toString().length();
+			
+			// Case when we have to do a query and add it logically (AND, OR) to the global result
+			// We check if an operator, a constant and a query has been found
+			if(op!=null && q!= null && cst != null && BVout != null) {
+
+				// Performing query
+				long[] newBVout = query(q, cst);
+				
+				// Adding logically this query to the global result
+				switch(op) {
+				
+					case AND:
+						for(int n = 0; n < BVout.length; ++n) {
+							BVout[n] &= newBVout[n];
+						}
+						break;
+						
+					case OR:
+						for(int n = 0; n < BVout.length; ++n) {
+							BVout[n] |= newBVout[n];
+						}
+						break;
+						
+					default:
+						throw new InvalidParameterException("\"" + instructions[i] + "\"" + ": Error for this query");
+				}
+				
+				// Invalidate the used query, operator and constant
+				op = null;
+				q = null;
+				cst = null;
+			}
+			// Case when just a query has to be done (first instruction)
+			// We check if a constant and a query has been found
+			else if(q!= null && cst != null && first) {
+				
+				// Perform the first query
+				BVout = query(q, cst);
+				
+				// Invalidate the used query and constant
+				first = false;
+				op = null;
+				q = null;
+				cst = null;
+			}
+		}
+		return BVout;
+	}
+	
 
 	/*** CORE FUNCTION OF THE QUERY "X != cst" ***/
 	// This method is the f!=(X,C) of the article (3.2.2)
@@ -200,7 +321,8 @@ public class BitWeavingH implements BitWeavingHInterface {
 	
 	/*** QUERY FUNCTION ***/
 	/**
-	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeavingH object
+	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeavingH object.<br>
+	 * Returns the result bit vector<br>
 	 * @param query among enum Query:
 		<blockquote>
 			DIFFERENT<br>
@@ -384,7 +506,7 @@ public class BitWeavingH implements BitWeavingHInterface {
 				break;
 			
 			default:
-				throw new InvalidParameterException("\"" + query + "\"" + ": Invalid parameter for query");
+				throw new InvalidParameterException("Invalid parameter for query");
 		}
 		
 		// Special post-treatment for the last incomplete segment

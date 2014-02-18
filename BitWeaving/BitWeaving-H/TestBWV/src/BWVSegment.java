@@ -5,10 +5,10 @@ public class BWVSegment
 	private long[] word;	 		// Processor words
 	private int k;					// Size of one datum
 	private int w;
-	private long mEq;
-	private long res;
 	private int wordItinerator;
 	private int Ls;
+	private long mEq;
+	private long res;
 
 	// Default constructor
 	public BWVSegment() 
@@ -20,12 +20,12 @@ public class BWVSegment
 	}
 
 	// Real constructor
-	public BWVSegment(long[] dataArray, int sizeOfOneDatum, int wOfWord)
+	public BWVSegment(long[] dataArray, int sizeOfOneDatum, int widthOfWord)
 	{
 		k = sizeOfOneDatum;
 		Ls = dataArray.length;
 		res = 0;
-		w = wOfWord;
+		w = widthOfWord;
 		wordItinerator = 0;
 		
 		if (Ls == 1)
@@ -64,7 +64,7 @@ public class BWVSegment
 	{
 		int i;
 		long mask, move = ( 1L << (k - 1) );
-	 
+		
 		for (i = 0; i < k; ++i)
 		{
 			mask = nb & move;
