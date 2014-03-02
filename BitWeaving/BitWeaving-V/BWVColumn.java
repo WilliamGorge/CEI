@@ -1,38 +1,35 @@
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 
-
-public class BitWeavingV implements BitWeavingVInterface
+public class BWVColumn implements BitWeavingVInterface
 {
-	private BWVSegment[] column; 			// Processor words
+	private ArrayList<BWVSegment> column; 			// Processor words
 	private int k;							// Size of one datum
 	private int Sno;
 	private int w;
 	private int nbData;
-	private long shiftLastSegment;
 	private long[] result;
 
-	public BitWeavingV() 
+	public BWVColumn() 
 	{
 		k = 0;
 		Sno = 0;
 		w = 0;
 		nbData = 0;
-		shiftLastSegment = 0;
 		result = null;
 		column = null;
 	}
 
-	public BitWeavingV(long[] dataArray, int sizeOfOneDatum, int widthOfWord)
+	public BWVColumn(long[] dataArray, int sizeOfOneDatum, int widthOfWord)
 	{
 		k = sizeOfOneDatum;
 		w = widthOfWord;
 		nbData = dataArray.length;
+		column = new ArrayList<BWVSegment>();
 
-		int i, j, n = nbData, p = nbData % w;
+		int i, j, p = nbData % w;
 		Sno = (p > 0) ? nbData/w+1 : nbData/w;
-		shiftLastSegment = (p > 0) ?   w - p : 0;
 
-		column = new BWVSegment[Sno];
 		long[] tempArray = new long[w];
 
 		for (i = 0; i < Sno - 1; ++i)
@@ -40,21 +37,21 @@ public class BitWeavingV implements BitWeavingVInterface
 			for (j = 0; j < w; ++j)
 				tempArray[j]= dataArray[w*i+j];
 			
-			column[i] = new BWVSegment(tempArray, sizeOfOneDatum, widthOfWord);
+			BWVSegment someSegment = new BWVSegment(tempArray, k, w);
+			column.add(someSegment);
 		}
 
 		p = (p != 0) ? p : w;
-
 		tempArray = new long[p];
 
 		for (j = 0; j < p; ++j)
 			tempArray[j] = dataArray[(Sno-1)*w+j];
 
-		column[Sno-1] = new BWVSegment(tempArray, sizeOfOneDatum, widthOfWord);
-		result = new long[Sno];
+		BWVSegment someSegment = new BWVSegment(tempArray, k, w);
+		column.add(someSegment);
 	}
 	
-	public BWVSegment[] getColumn()
+	public ArrayList<BWVSegment> getColumn()
 	{
 		return column;
 	}
@@ -73,28 +70,69 @@ public class BitWeavingV implements BitWeavingVInterface
 		}
 		
 		if (nbData % w != 0)
-			column[Sno-1].add(nb);
+			column.get(Sno-1).add(nb);
 		else
-		{
-			BWVSegment[] column2 = new BWVSegment[Sno+1];
-			
-			for (int i = 0; i < Sno; ++i)
-				column2[i] = column[i];
-			
+		{	
 			long[] tab = new long[1];
 			tab[0] = nb;
 			
-			column2[Sno] = new BWVSegment(tab, k, w);
+			BWVSegment someSegment = new BWVSegment(tab, k, w);
+			column.add(someSegment);
 			++Sno;
-			column = column2;
 			result = new long[Sno];
 		}
 	
 		++nbData;
-		--shiftLastSegment;
+	}
+	
+	public void add(long nb[])
+	{
+		int n = nb.length;
+		int roomLeft = (nbData % w == 0) ? 0 : nbData - (nbData % w);
 		
-		if (shiftLastSegment == -1)
-			shiftLastSegment = w - 1;
+		if (n <= roomLeft)
+		{
+			column.get(Sno-1).add(nb);
+		}
+		else
+		{
+			long[] tab = new long[roomLeft];
+			int i;
+			
+			for (i = 0; i < roomLeft; ++i)
+				tab[i] = nb[i];
+			
+			column.get(Sno-1).add(tab);
+			
+			int remainingDataToStore = n - roomLeft;
+			int newFullSegmentCreatedNb = remainingDataToStore/w;
+			int j;
+			
+			for (j = 0; j < newFullSegmentCreatedNb; ++j)
+			{
+				tab = new long[w];
+				
+				for (i = 0; i < w; ++i)
+					tab[i] = nb[roomLeft+j*w+i];
+				
+				BWVSegment someSegment = new BWVSegment(tab, k, w);
+				column.add(someSegment);
+			}
+			
+			
+			remainingDataToStore %= w;
+			tab = new long[remainingDataToStore];
+			
+			for (i = 0; i < remainingDataToStore; ++i)
+				tab[i] = nb[roomLeft+j*w+i];
+			
+			BWVSegment someSegment = new BWVSegment(tab, k, w);
+			column.add(someSegment);
+			Sno += (newFullSegmentCreatedNb+1);
+			result = new long[Sno];
+		}
+		
+		nbData += n;
 	}
 
 	public long[] query(Query queryName, long cst)
@@ -147,16 +185,70 @@ public class BitWeavingV implements BitWeavingVInterface
 		
 		return null;
 	}
+	
+	
+	public long[] query(Query queryName, long cst1, long cst2)
+	{	
+		long[] cstTab1 = new long[k];
+		long[] cstTab2 = new long[k];
+		long mask = ( 1L << (k-1) );
+		int i = 0;
+		
+		if (cst1 > cst2)
+		{
+			System.out.println(cst1 + " est strictement plus grand que " + cst2 + ".");
+			return cstTab1;
+		}
+		
+		if ((k < 63 && cst1 >= (1L << k)) || (k >= 63 && cst1 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
+		{
+			System.out.println(cst1 + " ne peut pas être codé en " + k + " bits.\n");
+			return cstTab1;
+		}
+
+		if ((k < 63 && cst2 >= (1L << k)) || (k >= 63 && cst2 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
+		{
+			System.out.println(cst2 + " ne peut pas être codé en " + k + " bits.\n");
+			return cstTab2;
+		}
+		
+		while (i < k)
+		{
+			if ( (mask & cst1) != 0 )
+				cstTab1[i] = ~0;
+			else
+				cstTab1[i] = 0;
+			
+			if ( (mask & cst2) != 0 )
+				cstTab2[i] = ~0;
+			else
+				cstTab2[i] = 0;
+			
+			mask >>>= 1;
+			++i;
+		}
+		
+		switch (queryName)
+		{
+			case BETWEEN:
+				return between(cstTab1, cstTab2);
+	
+			default:
+				System.out.println("No such query.");
+				break;
+		}
+
+		return null;
+	}
 
 	private long[] lessThan(long[] cstTab)
 	{
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column[i].lessThan(cstTab);
-			column[i].recharge();
+			result[i] = column.get(i).lessThan(cstTab);
+			column.get(i).recharge();
 		}
 		
-		result[Sno - 1] >>>= shiftLastSegment;
 		return result;
 	}
 
@@ -164,11 +256,21 @@ public class BitWeavingV implements BitWeavingVInterface
 	{
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column[i].greaterThan(cstTab);
-			column[i].recharge();
+			result[i] = column.get(i).greaterThan(cstTab);
+			column.get(i).recharge();
 		}
 		
-		result[Sno - 1] >>>= shiftLastSegment;
+		return result;
+	}
+	
+	private long[] between(long[] cstTab1, long[] cstTab2)
+	{
+		for (int i = 0; i < Sno; ++i)
+		{
+			result[i] = column.get(i).between(cstTab1, cstTab2);
+			column.get(i).recharge2();
+		}
+		
 		return result;
 	}
 
@@ -176,11 +278,10 @@ public class BitWeavingV implements BitWeavingVInterface
 	{
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column[i].equalTo(cstTab);
-			column[i].recharge();
+			result[i] = column.get(i).equalTo(cstTab);
+			column.get(i).recharge();
 		}
 
-		result[Sno - 1] >>>= shiftLastSegment;
 		return result;
 	}
 
@@ -188,11 +289,10 @@ public class BitWeavingV implements BitWeavingVInterface
 	{
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column[i].differentTo(cstTab);
-			column[i].recharge();
+			result[i] = column.get(i).differentTo(cstTab);
+			column.get(i).recharge();
 		}
 
-		result[Sno - 1] >>>= shiftLastSegment;
 		return result;
 	}
 
@@ -200,11 +300,10 @@ public class BitWeavingV implements BitWeavingVInterface
 	{
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column[i].lessThanOrEqualTo(cstTab);
-			column[i].recharge();
+			result[i] = column.get(i).lessThanOrEqualTo(cstTab);
+			column.get(i).recharge();
 		}
 
-		result[Sno - 1] >>>= shiftLastSegment;
 		return result;
 	}
 
@@ -212,26 +311,11 @@ public class BitWeavingV implements BitWeavingVInterface
 	{
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column[i].greaterThanOrEqualTo(cstTab);
-			column[i].recharge();
+			result[i] = column.get(i).greaterThanOrEqualTo(cstTab);
+			column.get(i).recharge();
 		}
 
-		result[Sno - 1] >>>= shiftLastSegment;
 		return result;
-	}
-
-	private void display(long result, int length)
-	{
-		long mask;
-
-		for (int j = 0; j < length; ++j)
-		{
-			mask = result & ( 1L << (w-1-j) );
-			mask = (mask != 0) ? 1 : 0;
-			System.out.print(mask);
-		}
-		
-		System.out.println();
 	}
 
 	/**
