@@ -1,9 +1,13 @@
+import java.util.ArrayList;
 
-public interface BitWeavingVInterface 
-{
+
+public interface BitWeavingVInterface {
+	
 	long[] query(Query queryName, long cst);
+	long[] query(Query queryName, long cst1, long cst2);
 	int size();
 	void add(long nb);
-	BWVSegment[] getColumn();
+	void add(long[] nb);
+	ArrayList<BWVSegment> getColumn();
 	long[] complexQuery(String query);
 }
