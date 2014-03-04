@@ -53,4 +53,16 @@ public abstract class BWColumn {
 	 * @return column.w
 	 */
 	abstract int getSizeOfProcessorWord();
+	
+	/**
+	 * Returns the size of one datum for this column, depends on the format of the data in it.
+	 * @return column.k
+	 */
+	abstract int getSizeOfOneDatum() ;
+	
+	/**
+	 * Returns the processor words of the column for each segment.
+	 * @return Processor words for each segment
+	 */
+	abstract void printProcessorWords();
 }

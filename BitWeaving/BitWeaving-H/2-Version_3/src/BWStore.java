@@ -1,3 +1,4 @@
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 
@@ -63,9 +64,12 @@ public class BWStore implements BWInterface{
 	 * Performs the query given the arguments
 	 * @param arg query
 	 * @author William Gorge and Benoit Sordet
+	 * @throws Exception Thrown when there is a syntax error
+	 * @throws InvalidParameterException Thrown when there is a illegal value for one parameter
 	 */
-	public BitVector query(String arg) {
+	public BitVector query(String arg) throws Exception {
 		
+		// Splits the string around spaces
 		String[] args = arg.split(" ");
 		
 		// Result variable that is returned
@@ -132,9 +136,11 @@ public class BWStore implements BWInterface{
 				}
 			}
 		}
+		catch (InvalidParameterException e) {
+			throw new InvalidParameterException("Error in query \"" + arg + "\": " + e.getMessage());
+		}
 		catch (Exception e) {
-			System.out.println("Syntax error in query: " + arg);
-			e.printStackTrace();
+			throw new Exception("Syntax error in query: \"" + arg + "\": " +  e.getMessage());
 		}
 		
 		return result;
@@ -201,5 +207,21 @@ public class BWStore implements BWInterface{
 		// Adding the new column to the array
 		columns.add(column);
 		lastAddIndex = columns.size() - 1;
+	}
+	
+	public void printProcessorWords(String columnName) {
+		
+		try {
+			
+			int columnIndex = indexOf(columnName);
+			
+			columns.get(columnIndex).printProcessorWords();
+			
+			
+		} catch (Exception e) {
+			System.out.println("Error during display of the processor words");
+			e.printStackTrace();
+		}
+		
 	}
 }

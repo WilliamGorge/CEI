@@ -1,3 +1,5 @@
+import java.security.InvalidParameterException;
+
 
 /**
  * Interface for the use of BitWeaving to use with a BWStore<br>
@@ -35,7 +37,9 @@ public interface BWInterface {
 	 * Performs the query given the arguments
 	 * @param arg query
 	 * @author William Gorge and Benoit Sordet
+	 * @throws Exception Thrown when there is a syntax error
+	 * @throws InvalidParameterException Thrown when there is a illegal value for one parameter
 	 */
-	public BitVector query(String arg);
+	public BitVector query(String arg) throws Exception;
 	
 }	

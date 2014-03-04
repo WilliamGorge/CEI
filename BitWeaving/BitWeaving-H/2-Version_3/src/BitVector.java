@@ -5,9 +5,14 @@ import java.util.ArrayList;
  * @author William Gorge and Benoit Sordet
  */
 public class BitVector {
-
+	
+	// Vector of bits, made of an arrayList of slots of the format "Long" ie slots of 64 bits
 	private ArrayList<Long> vector;
+	
+	// Size of the vector
 	private int size;
+	
+	// Index that indicates the next free bit in a slot of the vector. Always lover than 64.
 	private int index;
 	
 	/**
@@ -33,28 +38,34 @@ public class BitVector {
 		return s;
 	}
 	
+	/**
+	 * Sets the size of the bit vector, used for logical operations in the bit vector
+	 * @param newSize new size of the bit vector
+	 * @author William Gorge and Benoit Sordet
+	 */
 	private void setSize(int newSize) {
 		size = newSize;
 	}
 	
 	/**
-	 * Appends bits to the bit vector, the length of the bit word to append has to be specified (when lower than 64).
+	 * Appends bits to the bit vector, the length of the bit word to append has to be specified (when lower than Long.SIZE ie 64).
 	 * @param bits bits to append to the bit vector
 	 * @param length length of the bit word to append
 	 * @author William Gorge and Benoit Sordet
 	 */
 	public void append(long bits, int length) {
 		
-		// gets the old datum, remove it and update it
-		long oldDatum = 0;
-		if(!vector.isEmpty()) {
-			oldDatum = vector.get(vector.size() - 1);
-			vector.remove(vector.size() - 1);
-		}
-		long add = (bits << ((long)Long.SIZE - length - index));
-		vector.add(oldDatum | add);
+		// Init of the old slot, if it doesnt exists, is 0
+		long oldSlot = 0;
 		
-		// Adds the folowing datum to the next slot
+		// Gets the old slot and remove it
+		if(!vector.isEmpty()) oldSlot = vector.remove(vector.size() - 1);
+		
+		// Adds the bits data to this slot
+		long addSlot = (bits << ((long)Long.SIZE - length - index));
+		vector.add(oldSlot | addSlot);
+		
+		// Adds the folowing datum to the next slot if this slot gets full
 		if(index + length > Long.SIZE) {
 			
 			// Adding the rest of the datum
@@ -105,12 +116,11 @@ public class BitVector {
 			index = Long.SIZE;
 		}
 		
-		
 		// Updating arguments
 		size -= nbBitsToDelete;
 		index -= nbBitsToDelete;
 		
-		// Building a mask to put to zero the ze
+		// Building a mask to put to zero the remaining bits of the slot
 		long mask =  1;
 		for(int i = 1; i < index; ++i) {
 			mask <<= 1;
@@ -118,6 +128,7 @@ public class BitVector {
 		}
 		mask <<= (Long.SIZE - index);
 		
+		// Applying this mask to the slot
 		long maskedLong = vector.get(vector.size() - 1) & mask;
 		vector.set(vector.size() - 1, maskedLong);
 	}
@@ -208,7 +219,7 @@ public class BitVector {
 		BitVector bvResult = new BitVector();
 		
 		// Itteration on all the slots
-		for(int i = 0; i < vector.size() && i < bvOther.getVector().size(); ++i) {
+		for(int i = 0; i < size && i < bvOther.getVector().size(); ++i) {
 			
 			// Compute and add it to the bit vector
 			long tempResult = this.vector.get(i) | bvOther.getVector().get(i);
@@ -216,5 +227,20 @@ public class BitVector {
 		}
 		bvResult.setSize(Math.max(size, bvOther.size()));
 		return bvResult;
+	}
+	
+	/**
+	 * Compares two bit vectors (this and bvOther) and returns true if they are equal.
+	 * @param bvOther other bit vector to compare with this bitVector
+	 * @return the result of this comparaison
+	 * @author William Gorge and Benoit Sordet
+	 */
+	public boolean equals(BitVector bvOther) {
+		
+		// If the vectos are not the same size the result is false
+		if(size != bvOther.size())
+			return false;
+		
+		return vector.equals(bvOther.getVector());
 	}
 }

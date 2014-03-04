@@ -22,6 +22,7 @@ public class BWHColumn extends BWColumn {
 	private int N;	// Number of data that can fit in a processor word
 	private int Ls; // Length of one segment
 	private int nbZP; // Number of the zero added in the zerop padding
+	private long maxValue; // The highest value that can have a datum with k bits
 	
 	// Variables of the column
 	private int nbData; // Number of data in the column
@@ -35,10 +36,10 @@ public class BWHColumn extends BWColumn {
 	private long maskOneBit; // Mask used to build the maskResultLastSegment
 	
 	/**
-	 * Constructor with a column and a data size given
-	 * @param col column attatched to the object
-	 * @param sizeofonedata size (in bits) of one data in the column
+	 * Constructor of a BWH column with a processor word and a data size given (format of the data).
+	 * @param sizeofonedata size (in bits) of one data in the column, depends on the format of the data. It is the number of bits with which the data is encoded.
 	 * @param sizeofprocessorword size of the processor word
+	 * @throws InvalidParameterException Is thrown when sizeOfOneData is higher than Long.SIZE-1 (63). It is then impossible to create the column because the processor words are at least k + 1 bits
 	 */
 	public BWHColumn(String name, int sizeOfOneData, int sizeOfProcessorWord) {
 		
@@ -49,6 +50,10 @@ public class BWHColumn extends BWColumn {
 		N = w/(k+1);
 		Ls = N*(k+1);
 		nbZP = (w-N*(k+1));
+		if(k < Long.SIZE)
+			maxValue = (long) (Math.pow(2, k) - 1);
+		else 
+			throw new InvalidParameterException("Cannot create a BWH column with data encoded in " + k + "bits");
 		nbData = 0;
 		nbDataLastSegment = 0;
 		nbSegments = 0; 
@@ -83,6 +88,23 @@ public class BWHColumn extends BWColumn {
 		column = new ArrayList<BWHSegment>();
 		
 		
+	}
+	
+
+	
+	/**
+	 * For display. Returns the binary string with zeros of the long l
+	 * This is a little modification of Long.toBinaryString(long)
+	 * @param long l: long to convert to a string of bits
+	 * @author William Gorge
+	 */
+	private String longtobitsString(long l){
+		String s = "";
+		for(int i = 0; i < Long.numberOfLeadingZeros(l); ++i) {
+			s += "0";
+		}
+		if(l != 0) s += Long.toBinaryString(l);
+		return s;
 	}
 	
 	
@@ -156,6 +178,10 @@ public class BWHColumn extends BWColumn {
 		return w;
 	}
 	
+	public int getSizeOfOneDatum() {
+		return k;
+	}
+	
 	/*** QUERY FUNCTION ***/
 	/**
 	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeavingH object.<br>
@@ -170,10 +196,13 @@ public class BWHColumn extends BWColumn {
 			GREATER THAN OR EQUAL TO<br>
 		</blockquote>
 		cst: Constant to compare<br><br>
-	 * @throws InvalidParameterException
+	 * @throws InvalidParameterException thrown if query has an unknown value or if cst cannot be encoded in k bits
 	 * @author William Gorge
 	 */
 	public BitVector query(Query query, long cst) throws InvalidParameterException {
+		
+		if(cst > maxValue) 
+			throw new InvalidParameterException("Invalid value for the comparaison constant (value=" + cst + "): Too high to be encoded in " + k + " bits, maximum value for this format is " + maxValue);
 	
 		/*** INITIALIATION ***/
 
@@ -391,5 +420,25 @@ public class BWHColumn extends BWColumn {
 			System.out.println("Error during add on the column " + name + ": ");
 			e.printStackTrace();
 		}
+	}
+
+
+	public void printProcessorWords() {
+		
+		// Itteration on all the segment
+		for(int i = 0; i < column.size(); ++i) {
+			
+			System.out.println("Processor Words for segment " + (i + 1) + ":");
+			
+			// Gets the processor words
+			long[] processorWords = column.get(i).getProcessorWords();
+			
+			// Display them
+			for(int j = 0; j < processorWords.length; ++j)
+				System.out.println("	" + longtobitsString(processorWords[j]).substring(Long.SIZE - w));
+			
+			System.out.println();
+		}
+		
 	}
 }
