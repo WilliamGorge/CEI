@@ -30,39 +30,40 @@ public class MainTestBWH {
 	 * @param args: Nothing (yet)
 	 * @author William Gorge
 	 */
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+	for(int kk = 1; kk < 36; ++kk) {
 				
 		/****************** VARIABLES DE TEST MODIFIABLES A SOUHAIT ********************/
-		// Nombre de queries ˆ faire ˆ la suite
+		// Nombre de queries a faire a la suite
 		int nbQueries = 300;
 		
-		// Nombre de queries ˆ ignorer
+		// Nombre de queries a ignorer
 		int nbQueriesIgnored = 50;
 		
-		// Proba. d'ajouter une donnŽe ˆ chaque query
+		// Proba. d'ajouter une donnee a chaque query
 		float pbAdd = 0;
 		
-		// DŽfinit de quel test il s'agit:
+		// Definit de quel test il s'agit:
 		// Exemple 1, 2 et 3 sont les exemples des slides.
-		// L'exemple 1 correspond ˆ celui de la publication
-		// Exemple 0 est sur une colonne de nombres alŽatoires, on peut faire varier les paramres
+		// L'exemple 1 correspond a celui de la publication
+		// Exemple 0 est sur une colonne de nombres aleatoires, on peut faire varier les parameres
 		int example = 0;	
 		
 		// Valeurs pour l'exemple 0
-		// k0 = taille d'une donnŽe en bits
+		// k0 = taille d'une donnee en bits
 		// w0 = largeur du mot processeur
-		// columnlength0 = taille de la colonne d'entiers alŽatoires codŽs sur k0 bits
-		// La requte est exprimŽe par queryName0 pour la constante cst0
-		// 	ex: pour avoir toutes les donnŽes infŽrieures ˆ 5: cst0 = 5 et queryName = "LESS THAN"
-		// DiffŽrentes requtes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
-		int k0 = 16;
+		// columnlength0 = taille de la colonne d'entiers aleatoires codes sur k0 bits
+		// La requ�te est exprimee par queryName0 pour la constante cst0
+		// 	ex: pour avoir toutes les donnees inferieures a 5: cst0 = 5 et queryName = "LESS THAN"
+		// Differentes requ�tes disponibles: "DIFFERENT", "EQUAL", "LESS THAN", "LESS THAN OR EQUAL TO", "GREATER THAN", "GREATER THAN OR EQUAL TO"
+		int k0 = kk;
 		int w0 = 64;
 		int cst0 = 1000;
 		String queryName0 = "LESS THAN OR EQUAL TO";
 		int columnlength0 = 3000000;
 		
-		// Indique si la colonne, les mots processeurs et les vecteurs de bits rŽsultats doivent tre affichŽs
-		// Si ˆ faux, les segments (mots processeurs et rŽsultats) donnant un rŽsultat incorrect seront quand mme affichŽs
+		// Indique si la colonne, les mots processeurs et les vecteurs de bits resultats doivent �tre affiches
+		// Si a faux, les segments (mots processeurs et resultats) donnant un resultat incorrect seront quand m�me affiches
 		boolean display = false;
 		
 		/******************** FIN DES VARIABLES MODIFIABLES ***********************/
@@ -70,11 +71,11 @@ public class MainTestBWH {
 		// Pour l'exemple 0, si k est trop grand
 		if(k0 > w0 - 1) k0 = w0 - 1;
 		
-		// Pour l'exemple 0, si la constante donnŽe est invalide (ie. trop grande et ne peut tre encodŽe sur k bits)
+		// Pour l'exemple 0, si la constante donnee est invalide (ie. trop grande et ne peut �tre encodee sur k bits)
 		if(cst0 > Math.pow(2, k0) - 1) cst0 = (int) (Math.pow(2, k0) - 1);
 
 		
-		// Initialisation variables de test (ces valeurs vont tres modifiŽes suivant les exemples
+		// Initialisation variables de test (ces valeurs vont �tres modifiees suivant les exemples
 		int cst = 0;
 		int k = 0;
 		int w = 0;
@@ -84,7 +85,7 @@ public class MainTestBWH {
 		String queryName = null;
 		long[] column = null;
 		
-		/********* Cas des exemples traitŽs dans les slides ***************/
+		/********* Cas des exemples traites dans les slides ***************/
 		// Exemple 1 (k = 3)
 		if(example == 1) {
 			k = 3;
@@ -154,7 +155,7 @@ public class MainTestBWH {
 			column[9] = 1;
 		}
 		
-		/*** Exemple sur une colonne de chiffres alŽatoires (par dŽfaut) ****/
+		/*** Exemple sur une colonne de chiffres aleatoires (par defaut) ****/
 		else {
 			k = k0;
 			w = w0;
@@ -436,5 +437,6 @@ public class MainTestBWH {
 						   
 						   "	Naive Query --------- " + ((float)timeNaiveMethod)/((float)columnlength) + " ns per data in column\n");
 						   
+	}
 	}
 }
