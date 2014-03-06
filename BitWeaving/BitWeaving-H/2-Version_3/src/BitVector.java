@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Class that represents Bit Vectors (ie bit arrays of unknown dimention).<br>
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class BitVector {
 	
 	// Vector of bits, made of an arrayList of slots of the format "Long" ie slots of 64 bits
-	private ArrayList<Long> vector;
+	private LinkedList<Long> vector;
 	
 	// Size of the vector
 	private int size;
@@ -19,7 +19,8 @@ public class BitVector {
 	 * Constructor for BitVector.
 	 */
 	BitVector() {
-		vector = new ArrayList<Long>();
+		vector = new LinkedList<Long>();
+		size = 0;
 		index = 0;
 	}
 	
@@ -59,24 +60,45 @@ public class BitVector {
 		long oldSlot = 0;
 		
 		// Gets the old slot and remove it
-		if(!vector.isEmpty()) oldSlot = vector.remove(vector.size() - 1);
+		if(!vector.isEmpty()) oldSlot = vector.removeLast();
 		
-		// Adds the bits data to this slot
-		long addSlot = (bits << ((long)Long.SIZE - length - index));
-		vector.add(oldSlot | addSlot);
-		
-		// Adds the folowing datum to the next slot if this slot gets full
-		if(index + length > Long.SIZE) {
+		// Adds the bits data to this slot, when the data can fit entirely in the slot
+		if(index + length <= Long.SIZE) {
 			
-			// Adding the rest of the datum
-			vector.add(bits << ((long) Long.SIZE - index));
+			// Building the long to add to the current slot
+			long addSlot = (bits << ((long)Long.SIZE - length - index));
+			
+			// Adding it to the current slot
+			vector.add(oldSlot | addSlot);
 			
 			// Updating the index
-			index = index + length - Long.SIZE;
+			index += length;
+			
+			// If the index gets outside a slot
+			if(index == 64) {
+				index = 0;
+				vector.add(0L);
+			}
 		}
-		// Normal incrementation otherwise
-		else index += length;
 		
+		// Adds the bits data to this slot and to the next one, when the data cannot fit entirely in the slot
+		else  {
+			
+			// Computes the over taking
+			long overtaking = length + index - Long.SIZE;
+			
+			// Building the long to add to the current slot
+			long addSlot = (bits >>> overtaking);
+			
+			// Adding it to the current slot
+			vector.add(oldSlot | addSlot);
+			
+			// Adding the rest of the datum to the next slot
+			vector.add(bits << ((long) Long.SIZE - overtaking));
+			
+			// Updating the index
+			index += length - Long.SIZE;
+		}
 		size += length;
 
 	}
@@ -112,7 +134,7 @@ public class BitVector {
 		
 		// Case when a slot has to be removed
 		if(nbBitsToDelete > index) {
-			vector.remove(vector.size() - 1);
+			vector.removeLast();
 			index = Long.SIZE;
 		}
 		
@@ -129,8 +151,8 @@ public class BitVector {
 		mask <<= (Long.SIZE - index);
 		
 		// Applying this mask to the slot
-		long maskedLong = vector.get(vector.size() - 1) & mask;
-		vector.set(vector.size() - 1, maskedLong);
+		long maskedLong = vector.removeLast() & mask;
+		vector.add(maskedLong);
 	}
 
 	
@@ -139,7 +161,7 @@ public class BitVector {
 	 * @return bit vector
 	 * @author William Gorge and Benoit Sordet
 	 */
-	public ArrayList<Long> getVector() {
+	public LinkedList<Long> getVector() {
 		return vector;
 	}
 	
@@ -160,7 +182,7 @@ public class BitVector {
 	public boolean getBit(int index) {
 		
 		long mask = 1;
-		mask <<= (Long.SIZE - index);
+		mask <<= (Long.SIZE - this.index);
 		
 		boolean value = ((vector.get(index/Long.SIZE) & mask) != 0);
 		
@@ -180,7 +202,7 @@ public class BitVector {
 		for(int i = 0; i < vector.size() - 1; ++i) {
 			System.out.print(longtobitsString(vector.get(i)));
 		}
-		System.out.print(longtobitsString(vector.get(vector.size() - 1)).substring(0, rest));
+		System.out.print(longtobitsString(vector.getLast()).substring(0, rest));
 		System.out.print("\n");
 	}
 	
@@ -242,5 +264,16 @@ public class BitVector {
 			return false;
 		
 		return vector.equals(bvOther.getVector());
+	}
+	
+	/**
+	 * Removes all the elements from the vector.
+	 * @author William Gorge and Benoit Sordet
+	 */
+	public void clear() {
+		
+		vector.clear();
+		size = 0;
+		index = 0;
 	}
 }

@@ -196,13 +196,13 @@ public class BWHColumn extends BWColumn {
 			GREATER THAN OR EQUAL TO<br>
 		</blockquote>
 		cst: Constant to compare<br><br>
-	 * @throws InvalidParameterException thrown if query has an unknown value or if cst cannot be encoded in k bits
+	 * @throws IllegalArgumentException thrown if query has an unknown value or if cst cannot be encoded in k bits
 	 * @author William Gorge
 	 */
-	public BitVector query(Query query, long cst) throws InvalidParameterException {
+	public BitVector query(Query query, long cst) throws IllegalArgumentException {
 		
 		if(cst > maxValue) 
-			throw new InvalidParameterException("Invalid value for the comparaison constant (value=" + cst + "): Too high to be encoded in " + k + " bits, maximum value for this format is " + maxValue);
+			throw new IllegalArgumentException("Illegal value for the comparaison constant (value=" + cst + "): Too high to be encoded in " + k + " bits, maximum value for this format is " + maxValue);
 	
 		/*** INITIALIATION ***/
 
@@ -263,7 +263,7 @@ public class BWHColumn extends BWColumn {
 						ms |= mw;
 					}
 					ms >>>= nbZP; // Deleting the zero padding
-					BVout.append(ms & maskResultLastSegment, Ls);
+					BVout.append(ms, Ls);
 				}
 				break;
 				

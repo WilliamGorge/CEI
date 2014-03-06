@@ -136,7 +136,7 @@ public class BWStore implements BWInterface{
 				}
 			}
 		}
-		catch (InvalidParameterException e) {
+		catch (IllegalArgumentException e) {
 			throw new InvalidParameterException("Error in query \"" + arg + "\": " + e.getMessage());
 		}
 		catch (Exception e) {
@@ -157,6 +157,7 @@ public class BWStore implements BWInterface{
 		
 		int columnIndex = -1;
 		
+		// Get the column index from its name in the array columnNames
 		if(columns.get(lastAddIndex).getName().toString() == columnName) 
 			columnIndex = lastAddIndex;
 		
@@ -165,7 +166,6 @@ public class BWStore implements BWInterface{
 		
 		if(columnIndex == -1) throw new Exception("Column " + columnName + " not found");
 		
-		// Get the column index from its name in the array columnNames
 		// and calls the add method from the Column class
 		columns.get(columnIndex).add(datum);
 	}

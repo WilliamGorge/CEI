@@ -52,6 +52,8 @@ public class BWHSegment {
 		k = sizeofonedata;
 		w = sizeofprocessorword;
 		
+		if(k > w) throw new IllegalArgumentException("Invalid value for sizeofonedata (value=" + k + "): must be strictly lower than " + w); 
+		
 		// Calclulating the number of data that you can fit in a processor word
 		N = w/(k+1);
 		
