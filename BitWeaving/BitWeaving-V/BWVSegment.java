@@ -32,11 +32,11 @@ public class BWVSegment
 		wordItinerator = 0;
 		
 		if (Ls == 1)
-			mEq = ( 1L << (w-1) );
+			mEq = ( 1L << (Long.SIZE - 1) );
 		else if (Ls < w)
-			mEq = ~( ( 1L << (w - Ls) ) - 1 );
-		else
-			mEq = ~0;
+			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
+		else if (Ls == w)
+			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 
 		mEq2 = mEq;
 		int i, j;
@@ -55,7 +55,7 @@ public class BWVSegment
 				// On divise par 2 autant qu'il le faut pour que le résultat soit dans le premier bit.
 				mask = (mask != 0) ? 1 : 0;
 				// On déplace ensuite le bit vers l'emplacement approprié dans le but de l'ajouter à v[i].
-				mask <<= (w-j-1);
+				mask <<= (Long.SIZE-j-1);
 				// On ajoute le résultat à v[i].
 				word[i] |= mask;
 			}
@@ -73,7 +73,7 @@ public class BWVSegment
 		{
 			mask = nb & move;
 			mask = (mask != 0) ? 1 : 0;
-			mask <<= (w-Ls-1);
+			mask <<= (Long.SIZE-Ls-1);
 			word[i] |= mask;
 			move >>>= 1;
 		}
@@ -81,9 +81,9 @@ public class BWVSegment
 		++Ls;
 		
 		if (Ls < w)
-			mEq = ~( ( 1L << (w - Ls) ) - 1 );
+			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 		else
-			mEq = ~0;
+			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 		
 		mEq2 = mEq;
 	}
@@ -102,7 +102,7 @@ public class BWVSegment
 				// On divise par 2 autant qu'il le faut pour que le résultat soit dans le premier bit.
 				mask = (mask != 0) ? 1 : 0;
 				// On déplace ensuite le bit vers l'emplacement approprié dans le but de l'ajouter à v[i].
-				mask <<= (w-j-1);
+				mask <<= (Long.SIZE-j-1);
 				// On ajoute le résultat à v[i].
 				word[i] |= mask;
 			}
@@ -113,9 +113,9 @@ public class BWVSegment
 		Ls = Lss;
 		
 		if (Ls < w)
-			mEq = ~( ( 1L << (w - Ls) ) - 1 );
+			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 		else
-			mEq = ~0;
+			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 		
 		mEq2 = mEq;
 	}
@@ -125,20 +125,43 @@ public class BWVSegment
 		return word;
 	}
 	
+	private void display(long result, int length)
+	{
+		long mask;
+
+		for (int j = 0; j < length; ++j)
+		{
+			mask = result & (1L << (Long.SIZE-1-j));
+			mask = (mask != 0) ? 1 : 0;
+			System.out.print(mask);
+		}
+		
+		System.out.println();
+	}
+	
 	public void recharge()
 	{
 		res = 0;
-		mEq = (Ls < w) ? (1L << Ls) - 1 : ~0;
-		wordItinerator = 0;
+		wordItinerator = 0;		
+		
+		if (Ls < w)
+			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
+		else
+			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 	}	
 	
 	public void recharge2()
 	{
 		res = 0;
 		res2 = 0;
-		mEq = (Ls < w) ? (1L << Ls) - 1 : ~0;
-		mEq2 = mEq;
 		wordItinerator = 0;
+		
+		if (Ls < w)
+			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
+		else
+			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
+		
+		mEq2 = mEq;
 	}
 
 	public long lessThan(long[] cst)
