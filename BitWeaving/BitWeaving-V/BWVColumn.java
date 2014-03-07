@@ -49,6 +49,7 @@ public class BWVColumn implements BitWeavingVInterface
 
 		BWVSegment someSegment = new BWVSegment(tempArray, k, w);
 		column.add(someSegment);
+		result = new long[Sno];
 	}
 	
 	public ArrayList<BWVSegment> getColumn()
@@ -88,7 +89,7 @@ public class BWVColumn implements BitWeavingVInterface
 	public void add(long nb[])
 	{
 		int n = nb.length;
-		int roomLeft = (nbData % w == 0) ? 0 : nbData - (nbData % w);
+		int roomLeft = (nbData % w == 0) ? 0 : w - (nbData % w);
 		
 		if (n <= roomLeft)
 		{
@@ -230,6 +231,24 @@ public class BWVColumn implements BitWeavingVInterface
 		
 		switch (queryName)
 		{
+			case LESS_THAN:
+				return lessThan(cstTab1);
+	
+			case GREATER_THAN:
+				return greaterThan(cstTab1);
+	
+			case EQUAL:
+				return equalTo(cstTab1);
+	
+			case DIFFERENT:
+				return differentTo(cstTab1);
+	
+			case LESS_THAN_OR_EQUAL_TO:
+				return lessThanOrEqualTo(cstTab1);
+	
+			case GREATER_THAN_OR_EQUAL_TO:
+				return greaterThanOrEqualTo(cstTab1);
+		
 			case BETWEEN:
 				return between(cstTab1, cstTab2);
 	
@@ -316,6 +335,20 @@ public class BWVColumn implements BitWeavingVInterface
 		}
 
 		return result;
+	}
+
+	private void display(long result, int length)
+	{
+		long mask;
+
+		for (int j = 0; j < length; ++j)
+		{
+			mask = result & ( 1L << (Long.SIZE-1-j) );
+			mask = (mask != 0) ? 1 : 0;
+			System.out.print(mask);
+		}
+		
+		System.out.println();
 	}
 
 	/**
