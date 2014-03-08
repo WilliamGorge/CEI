@@ -52,9 +52,12 @@ public class BitVector {
 	 * Appends bits to the bit vector, the length of the bit word to append has to be specified (when lower than Long.SIZE ie 64).
 	 * @param bits bits to append to the bit vector
 	 * @param length length of the bit word to append
+	 * @throws IllegalArgumentException when the length given is greater than Long.SIZE bits (ie 64)
 	 * @author William Gorge and Benoit Sordet
 	 */
 	public void append(long bits, int length) {
+		
+		if(length > Long.SIZE) throw new IllegalArgumentException("Cannot append word that is longer than " + Long.SIZE +" bits, length given is " + length);
 		
 		// Init of the old slot, if it doesnt exists, is 0
 		long oldSlot = 0;
@@ -66,7 +69,7 @@ public class BitVector {
 		if(index + length <= Long.SIZE) {
 			
 			// Building the long to add to the current slot
-			long addSlot = (bits << ((long)Long.SIZE - length - index));
+			long addSlot = (bits >>> index);
 			
 			// Adding it to the current slot
 			vector.add(oldSlot | addSlot);
@@ -84,17 +87,17 @@ public class BitVector {
 		// Adds the bits data to this slot and to the next one, when the data cannot fit entirely in the slot
 		else  {
 			
-			// Computes the over taking
-			long overtaking = length + index - Long.SIZE;
-			
 			// Building the long to add to the current slot
-			long addSlot = (bits >>> overtaking);
+			long addSlot = (bits >>> index);
 			
 			// Adding it to the current slot
 			vector.add(oldSlot | addSlot);
 			
+			// Computes the over taking
+			long overtaking = length + index - Long.SIZE;
+			
 			// Adding the rest of the datum to the next slot
-			vector.add(bits << ((long) Long.SIZE - overtaking));
+			vector.add(bits << (length - overtaking));
 			
 			// Updating the index
 			index += length - Long.SIZE;
@@ -119,31 +122,40 @@ public class BitVector {
 	/**
 	 * Deletes the last nbBitsToDelete bits in the vector. It cannot delete more than Long.SIZE (64) bits.<br>
 	 * Only used in BW(H/V)Column but can be used elsewhere.
-	 * @param nbBitsToDelete Number of bits to delete from the end of the vector. If greater than Long.SIZE (64), it takes the value Long.SIZE (64).
+	 * @param nbBitsToDelete Number of bits to delete from the end of the vector. If greater than Long.SIZE (64), 
+	 * it takes the value Long.SIZE (64).If greater than the size of the vector, clears the vector.
 	 * @author William Gorge and Benoit Sordet
 	 * @see BWHColumn
 	 * @see Long
 	 */
 	public void deleteEnd(int nbBitsToDelete) {
 		
+		if(nbBitsToDelete == 0) return;
+		
+		if(nbBitsToDelete > size) {
+			clear();
+			return;
+		}
+		
 		// Check if the number of bits to delete is too high
 		// We did this to symplify the code
 		if(nbBitsToDelete > Long.SIZE) 
 			nbBitsToDelete = Long.SIZE;
-		
+
+		// Updating the size argument
+		size -= nbBitsToDelete;
 		
 		// Case when a slot has to be removed
 		if(nbBitsToDelete > index) {
 			vector.removeLast();
-			index = Long.SIZE;
+			index = index - nbBitsToDelete + Long.SIZE;
 		}
-		
-		// Updating arguments
-		size -= nbBitsToDelete;
-		index -= nbBitsToDelete;
+		else
+			index -= nbBitsToDelete;
+			
 		
 		// Building a mask to put to zero the remaining bits of the slot
-		long mask =  1;
+		long mask =  1L;
 		for(int i = 1; i < index; ++i) {
 			mask <<= 1;
 			mask |= 1L;

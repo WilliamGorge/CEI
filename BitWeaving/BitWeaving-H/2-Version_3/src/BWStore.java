@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class BWStore implements BWInterface{
 
-	private ArrayList<BWColumn> columns;
-	private int lastAddIndex;
-	private int w;
+	private ArrayList<BWColumn> columns; // Columns of the store
+	private int lastAddIndex; // Index of the last column where an 'addDatum' has been performed, or last column added
+	private int w; // Size of the processor word of the store
 	
 	/**
 	 * Defaut Constructor for BWStore. <br>
@@ -23,14 +23,18 @@ public class BWStore implements BWInterface{
 	/**
 	 * Constructor for BWStore, specifying the size of the processorword.
 	 * @param sizeOfProcessorWord Size of one processor word, cannot be larger than Long.SIZE (typically 64).
-	 * @throws Exception Thrown if the specified sizeOfProcessorWord is larger than Long.SIZE (typically 64).
+	 * @throws IllegalArgumentException Thrown if the specified sizeOfProcessorWord is larger than Long.SIZE (typically 64).
 	 * @see Long
 	 * @author William Gorge and Benoit Sordet
 	 */
 	BWStore(int sizeOfProcessorWord) throws Exception {
 		
+		if(sizeOfProcessorWord == 0) 
+			throw new IllegalArgumentException("The size of the processor word given (value=" + sizeOfProcessorWord + ") cannot be 0");
+		
+		
 		if(sizeOfProcessorWord > Long.SIZE) 
-			throw new Exception("This API cannot handle a processor word bigger than " + Long.SIZE + " bits (here " + sizeOfProcessorWord + " bits)");
+			throw new IllegalArgumentException("This API cannot handle a processor word bigger than " + Long.SIZE + " bits (here " + sizeOfProcessorWord + " bits)");
 		
 		w =  sizeOfProcessorWord;
 		columns = new ArrayList<BWColumn>();
@@ -73,7 +77,7 @@ public class BWStore implements BWInterface{
 		String[] args = arg.split(" ");
 		
 		// Result variable that is returned
-		BitVector result = new BitVector();
+		BitVector result = null;
 		
 		try {
 			
@@ -81,7 +85,7 @@ public class BWStore implements BWInterface{
 			Query query = null;
 			Operator op = null;
 			int columnIndex = -1;
-			int cst = -1;
+			long cst = -1;
 			boolean first = true;
 			
 			// Itterating on the arguments
@@ -112,7 +116,7 @@ public class BWStore implements BWInterface{
 				++i;
 				
 				// Scan of the constant
-				cst = Integer.parseInt(args[i]);
+				cst = Long.parseLong(args[i]);
 				
 
 				// Performs the query
@@ -185,6 +189,10 @@ public class BWStore implements BWInterface{
 		switch(columnType) {
 			case BWH:
 				newColumn = new BWHColumn(columnName, sizeOfOneDatum, w);
+				break;
+			
+			case BWV:
+				newColumn = new BWVColumn(columnName, sizeOfOneDatum, w);
 				break;
 		}
 		

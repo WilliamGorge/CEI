@@ -28,31 +28,21 @@ public class BWHSegment {
 	private int xIndex; // Index for the different data in ont processor word
 	private int yIndex; // Index for the processor words array	
 	
-	
-	/**
-	 * Default constructor
-	 */
-	public BWHSegment() {
-		k = 0;
-		w = 0;
-		v = null;
-	}
-	
 	/** 
 	 * Constructs the segment given its elements in columnsegment and other parameters and indicating
 	 * if it is the last segment. This information is used to optimize the construction time
 	 * @param columnsegement elements of the segment to create
-	 * @param sizeofonedata size (in bits) of one data in the column
+	 * @param sizeOfOneData size (in bits) of one data in the column
 	 * @param sizeofprocessorword size of the processor word
 	 * @param isFullSegment indicates if it is a full segment or not
 	 */
-	public BWHSegment(int sizeofonedata, int sizeofprocessorword) {
+	public BWHSegment(int sizeOfOneData, int sizeOfProcessorWord) {
 		
 		// Coping the arguments
-		k = sizeofonedata;
-		w = sizeofprocessorword;
+		k = sizeOfOneData;
+		w = sizeOfProcessorWord;
 		
-		if(k > w) throw new IllegalArgumentException("Invalid value for sizeofonedata (value=" + k + "): must be strictly lower than " + w); 
+		if(k > w) throw new IllegalArgumentException("Invalid value for sizeOfOneData (value=" + k + "): must be strictly lower than " + w); 
 		
 		// Calclulating the number of data that you can fit in a processor word
 		N = w/(k+1);

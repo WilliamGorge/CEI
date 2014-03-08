@@ -15,7 +15,7 @@ public abstract class BWColumn {
 	
 	
 	/**
-	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeavingH object<br>
+	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeaving object<br>
 	 * @param query among enum Query:
 		<blockquote>
 			DIFFERENT<br>

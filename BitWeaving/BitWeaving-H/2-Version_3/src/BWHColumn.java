@@ -37,19 +37,23 @@ public class BWHColumn extends BWColumn {
 	
 	/**
 	 * Constructor of a BWH column with a processor word and a data size given (format of the data).
-	 * @param sizeofonedata size (in bits) of one data in the column, depends on the format of the data. It is the number of bits with which the data is encoded.
+	 * @param sizeOfOneDatum size (in bits) of one data in the column, depends on the format of the data. It is the number of bits with which the data is encoded.
 	 * @param sizeofprocessorword size of the processor word
-	 * @throws InvalidParameterException Is thrown when sizeOfOneData is higher than Long.SIZE-1 (63). It is then impossible to create the column because the processor words are at least k + 1 bits
+	 * @throws InvalidParameterException Is thrown when sizeOfOneDatum is higher than sizeOfProcessorWord - 1. It is then impossible to create the column because the processor words takes at least k + 1 bits
 	 */
-	public BWHColumn(String name, int sizeOfOneData, int sizeOfProcessorWord) {
+	public BWHColumn(String name, int sizeOfOneDatum, int sizeOfProcessorWord) {
+		
+		if(sizeOfOneDatum + 1 > sizeOfProcessorWord) throw new IllegalArgumentException("The size of a datum given (value=" + sizeOfOneDatum + ") cannot be greater or equal to the size of the processor word given (value=" + sizeOfProcessorWord + ")");
+		if(sizeOfOneDatum == 0) throw new IllegalArgumentException("The size of a datum given (value=" + sizeOfOneDatum + ") cannot be 0");
+		if(sizeOfProcessorWord == 0) throw new IllegalArgumentException("The size of the processor word given (value=" + sizeOfProcessorWord + ") cannot be 0");
 		
 		// Instaciation of the arguments
 		this.name = name;
-		k = sizeOfOneData;
+		k = sizeOfOneDatum;
 		w = sizeOfProcessorWord;
 		N = w/(k+1);
 		Ls = N*(k+1);
-		nbZP = (w-N*(k+1));
+		nbZP = (w-Ls);
 		if(k < Long.SIZE)
 			maxValue = (long) (Math.pow(2, k) - 1);
 		else 
@@ -138,7 +142,7 @@ public class BWHColumn extends BWColumn {
 	// This method is the f<(X,C) of the article and in the slides
 	// The algorithm is explained at "Figure 4" of the article
 	private long fLessThan(long X, long Y) {
-		
+			
 		// Computing the result
 		long Z = X ^ mask;
 		Z = Y + Z;
@@ -237,7 +241,8 @@ public class BWHColumn extends BWColumn {
 						mw >>>= i;
 						ms |= mw;
 					}
-					ms >>>= nbZP; // Deleting the zero padding
+					ms >>>= nbZP;
+					ms <<= (Long.SIZE - Ls);
 					BVout.append(ms, Ls);
 				}
 				break;
@@ -262,7 +267,8 @@ public class BWHColumn extends BWColumn {
 						mw >>>= i;
 						ms |= mw;
 					}
-					ms >>>= nbZP; // Deleting the zero padding
+					ms >>>= nbZP;
+					ms <<= (Long.SIZE - Ls);
 					BVout.append(ms, Ls);
 				}
 				break;
@@ -288,7 +294,8 @@ public class BWHColumn extends BWColumn {
 						mw >>>= i;
 						ms |= mw;
 					}
-					ms >>>= nbZP; // Deleting the zero padding
+					ms >>>= nbZP;
+					ms <<= (Long.SIZE - Ls);
 					BVout.append(ms, Ls);
 				}
 				break;
@@ -314,7 +321,8 @@ public class BWHColumn extends BWColumn {
 						mw >>>= i;
 						ms |= mw;
 					}
-					ms >>>= nbZP; // Deleting the zero padding
+					ms >>>= nbZP;
+					ms <<= (Long.SIZE - Ls);
 					BVout.append(ms, Ls);
 				}
 				break;
@@ -339,7 +347,8 @@ public class BWHColumn extends BWColumn {
 						mw >>>= i;
 						ms |= mw;
 					}
-					ms >>>= nbZP; // Deleting the zero padding
+					ms >>>= nbZP;
+					ms <<= (Long.SIZE - Ls);
 					BVout.append(ms, Ls);
 				}
 				break;
@@ -366,7 +375,8 @@ public class BWHColumn extends BWColumn {
 						mw >>>= i;
 						ms |= mw;
 					}
-					ms >>>= nbZP; // Deleting the zero padding
+					ms >>>= nbZP;
+					ms <<= (Long.SIZE - Ls);
 					BVout.append(ms, Ls);
 				}
 				break;
