@@ -11,7 +11,7 @@ public class MainBWPerfs {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		
+		/*
 		for(int k = 1; k <= 63; ++k)
 			testQueryExample0(k, ColumnType.BWH, "<", 1); // Query "< 1" sur une colonne BWH avec k qui varie
 
@@ -24,7 +24,7 @@ public class MainBWPerfs {
 		for(int k = 1; k <= 64; ++k)
 			testAddExample0(k, ColumnType.BWV);
 		
-		System.out.println("\n\n\nPERFORMANCE TEST FINISHED\n");
+		System.out.println("\n\n\nPERFORMANCE TEST FINISHED\n");*/
 	}
 	
 	/**

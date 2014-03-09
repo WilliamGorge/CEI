@@ -230,13 +230,13 @@ public class BitVector {
 		BitVector bvResult = new BitVector();
 		
 		// Itteration on all the slots
-		for(int i = 0; i < vector.size() - 1 && i < bvOther.getVector().size() - 1; ++i) {
+		for(int i = 0; i < vector.size() && i < bvOther.getVector().size(); ++i) {
 			
 			// Compute and add it to the bit vector
 			long tempResult = this.vector.get(i) & bvOther.getVector().get(i);
 			bvResult.append(tempResult);
 		}
-		bvResult.setSize(Math.max(size, bvOther.size()));
+		bvResult.setSize(Math.min(size, bvOther.size()));
 		return bvResult;
 	}
 	
@@ -253,13 +253,13 @@ public class BitVector {
 		BitVector bvResult = new BitVector();
 		
 		// Itteration on all the slots
-		for(int i = 0; i < size && i < bvOther.getVector().size(); ++i) {
+		for(int i = 0; i < vector.size() && i < bvOther.getVector().size(); ++i) {
 			
 			// Compute and add it to the bit vector
 			long tempResult = this.vector.get(i) | bvOther.getVector().get(i);
 			bvResult.append(tempResult);
 		}
-		bvResult.setSize(Math.max(size, bvOther.size()));
+		bvResult.setSize(Math.min(size, bvOther.size()));
 		return bvResult;
 	}
 	

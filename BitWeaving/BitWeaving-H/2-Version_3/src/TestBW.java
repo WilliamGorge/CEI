@@ -10,13 +10,13 @@ import org.junit.Test;
  * 		Example 3: one column of 10 data, k = 2, w = 8, doing a query
  * 		Example 0: one column of 2172184 data, k = 16, w = 64, doing a query
  * 		Example 0: one column of 2172184 data, k = 16, w = 64, doing a query
- * 		(Not done yet) Example 4: 4 columns of 200 data, k = 16, w = 64, doing a complex query
+ * 		Example 4: 4 columns of 1000 data, k = 16, w = 64, doing a complex query
  * 		
  * @author William Gorge
  */
 public class TestBW {
 	
-	ColumnType columnTypeTested = ColumnType.BWH;
+	ColumnType columnTypeTested = ColumnType.BWV;
 	long resultOne = 1L << (Long.SIZE - 1);
 	
 	
@@ -258,7 +258,7 @@ public class TestBW {
 		BWStore store = new BWStore(w);
 		
 		// Loading store
-		store.addColumn("Column1", ColumnType.BWH, k);
+		store.addColumn("Column1", columnTypeTested, k);
 		for(int i = 0; i < column.size(); ++i) {
 			store.addDatum(column.get(i), "Column1");
 		}
@@ -342,7 +342,7 @@ public class TestBW {
 		BWStore store = new BWStore(w);
 		
 		// Loading store
-		store.addColumn("Column1", ColumnType.BWH, k);
+		store.addColumn("Column1", columnTypeTested, k);
 		for(int i = 0; i < column.size(); ++i) {
 			store.addDatum(column.get(i), "Column1");
 		}
@@ -383,22 +383,22 @@ public class TestBW {
 	
 	
 	
-	/******************************* EXAMPLE 0: QUERY PERFORMANCE ***************************/
+	/******************************* EXAMPLE 0: QUERY  ***************************/
 	/**
 	 * 
-	 * Test for the performance of query for example 0 of the documentation.
-	 * A random column is created and many queries are applied to it to measure performance
+	 * Test for the query for example 0 of the documentation.
+	 * A random column is created and many queries are applied to it. Performance is measured
 	 * @author William Gorge and Benoit Sordet
 	 * @throws Exception
 	 */
 
-	
+	@Test
 	public void testQueryExample0() throws Exception {
 		
 
 		System.out.println("\n\n\n\n\n\n\n*********** Performance Query Example0 ***********\n");
 		
-		int k = 2;
+		int k = 36;
 		int w = 64;
 		int cst = 1;
 		int columnInitialLength = 2172184;
@@ -608,4 +608,146 @@ public class TestBW {
 		}
 	}
 	
+	
+	
+	
+	
+	
+	/******************************* EXAMPLE 0: ADD PERFORMANCE ***************************/
+	/**
+	 * 
+	 * Test for the performance of add for example 0 of the documentation.
+	 * A random column is created and many queries are applied to it to measure performance
+	 * @author William Gorge and Benoit Sordet
+	 * @throws Exception
+	 */
+
+	@Test
+	public void testComplexQueryExample0() throws Exception {
+		
+
+		System.out.println("\n\n\n\n\n\n\n*********** Complex query Example0 ***********\n");
+		
+		int w = 64;
+		String query = "Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100";
+		
+		int columnInitialLength = 1000;
+		int nbQueries = 100;
+		int nbQueriesWarmUp = 20;
+		
+		int[] kTab = new int[5];
+		kTab[0] = 16;
+		kTab[1] = 8;
+		kTab[2] = 1;
+		kTab[3] = 3;
+		kTab[4] = 32;
+	
+		ArrayList<ArrayList<Long>> columns = new ArrayList<ArrayList<Long>>();
+			
+		// Initialization store
+		BWStore store = new BWStore(w);
+		
+		for(int n = 0; n < kTab.length; ++n) {
+			
+			long max = (long) (Math.pow(2, kTab[n]) - 1);
+			
+			// Creating column
+			store.addColumn("Column" + (n+1), columnTypeTested, kTab[n]);
+			
+			// Creating raw column
+			ArrayList<Long> column = new ArrayList<Long>();
+			
+			// Create the data and load the store
+			for(int i = 0; i < columnInitialLength - 1; ++i) {
+				
+				// Generate the data and memorizing it with native ArrayList
+				long datumGenerated = (long) (Math.random()*max);
+				column.add(datumGenerated);
+				
+				// Loading store at the same time
+				store.addDatum(datumGenerated, "Column" + (n+1));
+			}
+			columns.add(column);
+		}
+		
+		/***************** BW Complex Query *****************/
+		// Measuring time
+		long timeTotalQuery = 0;
+		BitVector result = new BitVector();
+		
+		// Query loop 
+		for(int i = 0; i < nbQueries + nbQueriesWarmUp; ++i) {
+			
+			// Measuring time
+			long timeBeforeQuery = System.nanoTime();
+	
+			// Doing the query
+			result = store.query(query);
+			
+			// Measuring time
+			if(i >= nbQueriesWarmUp) timeTotalQuery += System.nanoTime() - timeBeforeQuery;
+			
+		}
+		
+		/***************** NAIVE QUERY *****************/
+		// Measuring time
+		long timeTotalNaiveQuery = 0;
+		BitVector resultWanted = new BitVector();
+
+		// Query loop
+		for(int n = 0; n < nbQueries + nbQueriesWarmUp; ++n) {
+
+			// Clear the result for the next query
+			resultWanted.clear();
+			
+			// Measuring time
+			long timeBeforeNaiveQuery = System.nanoTime();
+			
+			// Naive query
+			// Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100"
+			for(int i = 0; i < columnInitialLength - 1; ++i) {
+				if((((columns.get(0).get(i) < 100 
+						|| columns.get(1).get(i) == 10)
+						|| columns.get(2).get(i) == 0 )
+						&& columns.get(3).get(i) >=1 )
+						|| columns.get(4).get(i) < 100 )
+					resultWanted.append(resultOne, 1);
+				else
+					resultWanted.append(0, 1);
+			}
+			
+			// Measuring time
+			if(n>= nbQueriesWarmUp) timeTotalNaiveQuery += System.nanoTime() - timeBeforeNaiveQuery;
+		}
+		
+		/******** DISPLAY THE PERFORMANCE *******/
+		System.out.println("\n\n" + 
+				   "Average time per data in column:\n\n" + 
+				   
+				   "	" + columnTypeTested + " Complex Query ------ " + (((float) timeTotalQuery)/((float)( nbQueries*columnInitialLength))) + " ns per data in column\n" +
+				   
+				   "	Naive Query --------- " + ((float) timeTotalNaiveQuery)/((float) nbQueries*columnInitialLength) + " ns per data in column\n");
+
+		
+		/****** CHECK THE RESULT ******/		
+		// Check the result
+		if(result.equals(resultWanted)) {
+			System.out.println("-- Test Successful --");
+		}
+		else {
+			for(int i = 0; i < result.getVector().size(); ++i) {
+
+				if(result.getVector().get(i).longValue() !=  resultWanted.getVector().get(i).longValue()) {
+						System.out.println(" -- FAIL here: from result " + i*Long.SIZE + " to " + + ((i+1)*Long.SIZE-1) + " ---");
+						System.out.println("	Wanted:   " + longtobitsString(resultWanted.getVector().get(i)));
+						System.out.println("	Obtained: " + longtobitsString(result.getVector().get(i)));
+						System.out.println();
+				}
+			}
+			System.out.println("\n-- Test Failed --");
+			throw new Exception("Test failed");
+		}
+		
+				   
+	}
 }

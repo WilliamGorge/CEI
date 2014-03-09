@@ -168,7 +168,7 @@ public class BWStore implements BWInterface{
 		else
 			columnIndex = indexOf(columnName);
 		
-		if(columnIndex == -1) throw new Exception("Column " + columnName + " not found");
+		if(columnIndex == -1) throw new Exception("Column \"" + columnName + "\" not found");
 		
 		// and calls the add method from the Column class
 		columns.get(columnIndex).add(datum);
@@ -183,6 +183,12 @@ public class BWStore implements BWInterface{
 	 * @author William Gorge and Benoit Sordet
 	 */
 	public void addColumn(String columnName, ColumnType columnType, int sizeOfOneDatum) {
+		
+		// Check if the name already exists
+		for(int i=0; i < columns.size(); ++i) {
+			if(columns.get(i).getName() == columnName)
+				throw new IllegalArgumentException("The name " + columnName + " is aldready used in this store");
+		}
 		
 		// Initializing the new column
 		BWColumn newColumn = null;

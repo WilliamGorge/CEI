@@ -324,7 +324,7 @@ public class BWVColumn extends BWColumn
 			
 			// Display them
 			for(int j = 0; j < processorWords.length; ++j)
-				System.out.println("	" + longtobitsString(processorWords[j]).substring(Long.SIZE - w));
+				System.out.println("	" + longtobitsString(processorWords[j]).substring(0,w));
 			
 			System.out.println();
 		}
