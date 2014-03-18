@@ -22,9 +22,30 @@ public class MainBWPerfs {
 			testAddExample0(k, ColumnType.BWH);
 		
 		for(int k = 1; k <= 64; ++k)
-			testAddExample0(k, ColumnType.BWV);
+			testAddExample0(k, ColumnType.BWV);*/
 		
-		System.out.println("\n\n\nPERFORMANCE TEST FINISHED\n");*/
+
+
+		System.out.println("\n\n\n\n\n\n***\nPERFORMANCE TEST TOWARDS THE NUMBER OF DATA\n****\n");
+		
+		for(int nbDataMultipilucator = 1; nbDataMultipilucator < 50; ++nbDataMultipilucator)
+			testComplexQueryExample0(nbDataMultipilucator*300, 0, ColumnType.BWH);
+		
+		for(int nbDataMultipilucator = 1; nbDataMultipilucator < 50; ++nbDataMultipilucator)
+			testComplexQueryExample0(nbDataMultipilucator*300, 0, ColumnType.BWV);
+		
+		
+		/*
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n***\nPERFORMANCE TEST TOWARDS THE SIZE OF DATA\n***\n");
+		
+		for(int kAdd = 0; kAdd <= 31; ++kAdd)
+			testComplexQueryExample0(1000000, kAdd, ColumnType.BWH);
+		
+		for(int kAdd = 0; kAdd <= 31; ++kAdd)
+			testComplexQueryExample0(1000000, kAdd, ColumnType.BWH);
+			*/
+
+		System.out.println("\n\n\nPERFORMANCE TEST FINISHED\n");
 	}
 	
 	/**
@@ -260,6 +281,134 @@ public class MainBWPerfs {
 			}
 			System.out.println("\n!!!!!!! Test FAILED !!!!!!!");
 		}
+	}
+	
+	public static void testComplexQueryExample0(int nbData, int kAdd, ColumnType columnTypeTested) throws Exception {
+		
+
+		System.out.println("\n\n\n\n\n\n\n*********** Complex query  nbData=" + nbData +"  kAdd=" + kAdd + "  columnTypeTested=" + columnTypeTested  + "***********\n");
+		
+		int w = 64;
+		String query = "Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100";
+		
+		int columnInitialLength = nbData;
+		int nbQueries = 100;
+		int nbQueriesWarmUp = 20;
+		
+		int[] kTab = new int[5];
+		kTab[0] = 16 + kAdd;
+		kTab[1] = 8 + kAdd;
+		kTab[2] = 1 + kAdd;
+		kTab[3] = 3 + kAdd;
+		kTab[4] = 32 + kAdd;
+	
+		ArrayList<ArrayList<Long>> columns = new ArrayList<ArrayList<Long>>();
+			
+		// Initialization store
+		BWStore store = new BWStore(w);
+		
+		for(int n = 0; n < kTab.length; ++n) {
+			
+			long max = (long) (Math.pow(2, kTab[n]) - 1);
+			
+			// Creating column
+			store.addColumn("Column" + (n+1), columnTypeTested, kTab[n]);
+			
+			// Creating raw column
+			ArrayList<Long> column = new ArrayList<Long>();
+			
+			// Create the data and load the store
+			for(int i = 0; i < columnInitialLength - 1; ++i) {
+				
+				// Generate the data and memorizing it with native ArrayList
+				long datumGenerated = (long) (Math.random()*max);
+				column.add(datumGenerated);
+				
+				// Loading store at the same time
+				store.addDatum(datumGenerated, "Column" + (n+1));
+			}
+			columns.add(column);
+		}
+		
+		/***************** BW Complex Query *****************/
+		// Measuring time
+		long timeTotalQuery = 0;
+		BitVector result = new BitVector();
+		
+		// Query loop 
+		for(int i = 0; i < nbQueries + nbQueriesWarmUp; ++i) {
+			
+			// Measuring time
+			long timeBeforeQuery = System.nanoTime();
+	
+			// Doing the query
+			result = store.query(query);
+			
+			// Measuring time
+			if(i >= nbQueriesWarmUp) timeTotalQuery += System.nanoTime() - timeBeforeQuery;
+			
+		}
+		
+		/***************** NAIVE QUERY *****************/
+		// Measuring time
+		long timeTotalNaiveQuery = 0;
+		BitVector resultWanted = new BitVector();
+
+		// Query loop
+		for(int n = 0; n < nbQueries + nbQueriesWarmUp; ++n) {
+
+			// Clear the result for the next query
+			resultWanted.clear();
+			
+			// Measuring time
+			long timeBeforeNaiveQuery = System.nanoTime();
+			
+			// Naive query
+			// Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100"
+			for(int i = 0; i < columnInitialLength - 1; ++i) {
+				if((((columns.get(0).get(i) < 100 
+						|| columns.get(1).get(i) == 10)
+						|| columns.get(2).get(i) == 0 )
+						&& columns.get(3).get(i) >=1 )
+						|| columns.get(4).get(i) < 100 )
+					resultWanted.append(resultOne, 1);
+				else
+					resultWanted.append(0, 1);
+			}
+			
+			// Measuring time
+			if(n>= nbQueriesWarmUp) timeTotalNaiveQuery += System.nanoTime() - timeBeforeNaiveQuery;
+		}
+		
+		/******** DISPLAY THE PERFORMANCE *******/
+		System.out.println("\n\n" + 
+				   "Average time per data in column:\n\n" + 
+				   
+				   "	" + columnTypeTested + " Complex Query ------ " + (((float) timeTotalQuery)/((float)( nbQueries*columnInitialLength))) + " ns per data in column\n" +
+				   
+				   "	Naive Query --------- " + ((float) timeTotalNaiveQuery)/((float) nbQueries*columnInitialLength) + " ns per data in column\n");
+
+		
+		/****** CHECK THE RESULT ******/		
+		// Check the result
+		if(result.equals(resultWanted)) {
+			System.out.println("-- Test Successful --");
+		}
+		else {
+			for(int i = 0; i < result.getVector().size(); ++i) {
+
+				if(result.getVector().get(i).longValue() !=  resultWanted.getVector().get(i).longValue()) {
+						System.out.println(" -- FAIL here: from result " + i*Long.SIZE + " to " + + ((i+1)*Long.SIZE-1) + " ---");
+						System.out.println("	Wanted:   " + longtobitsString(resultWanted.getVector().get(i)));
+						System.out.println("	Obtained: " + longtobitsString(result.getVector().get(i)));
+						System.out.println();
+				}
+			}
+			System.out.println("\n-- Test Failed --");
+			throw new Exception("Test failed");
+		}
+		
+				   
 	}
 	
 

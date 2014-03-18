@@ -32,8 +32,6 @@ public class BWHColumn extends BWColumn {
 	// Masks used for bit processing
 	private long mask; // Mask for the query less than
 	private long maskout; // Masks the bits outside the theorical processor word
-	private long maskResultLastSegment; // Mask that delete the wring results of the added "0" data of the last segment
-	private long maskOneBit; // Mask used to build the maskResultLastSegment
 	
 	/**
 	 * Constructor of a BWH column with a processor word and a data size given (format of the data).
@@ -83,10 +81,6 @@ public class BWHColumn extends BWColumn {
 			maskout <<= 1;
 			maskout |= 1L;
 		}
-		
-		// Mask that delete the wring results of the added "0" data of the last segment
-		maskResultLastSegment = 0;
-		maskOneBit = 1L << (Ls - 1);
 		
 		// Initialization of the Column
 		column = new ArrayList<BWHSegment>();
@@ -409,10 +403,6 @@ public class BWHColumn extends BWColumn {
 				// Updating the segment infos
 				++nbSegments;
 				nbDataLastSegment = 0;
-				
-				// Updating the mask for the result of the last segment (to delete the wrong added 0 data)
-				maskResultLastSegment = 0;
-				maskOneBit = 1L << (Ls - 1);
 			}
 			
 			// Add the datum to the last segment
@@ -421,10 +411,6 @@ public class BWHColumn extends BWColumn {
 			// Update the number of data
 			++nbData;
 			++nbDataLastSegment;
-			
-			// Updating the mask for the result of the last segment (to delete the wrong added 0 data)
-			maskResultLastSegment |= maskOneBit;
-			maskOneBit >>>= 1;
 
 		} catch(Exception e) {
 			System.out.println("Error during add on the column " + name + ": ");

@@ -225,7 +225,7 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
-	@Test
+	
 	public void testQueryExemple2() throws Exception {
 		
 
@@ -621,7 +621,7 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
-	@Test
+	
 	public void testComplexQueryExample0() throws Exception {
 		
 
