@@ -92,11 +92,11 @@ public class BWStore implements BWInterface{
 			for(int i = 0; i < args.length; ++i) {
 				
 				// Scan of the logic operator
-				if(args[i].matches("and")) {
+				if(args[i].contains("and") && args[i].length() == 3) {
 					op = Operator.AND;
 					++i;
 				}
-				else if(args[i].matches("or")) {
+				else if(args[i].contains("or") && args[i].length() == 2) {
 					op = Operator.OR;
 					++i;
 				}
@@ -106,12 +106,12 @@ public class BWStore implements BWInterface{
 				++i;
 				
 				// Scan of the query type
-				if(args[i].matches("<")) query = Query.LESS_THAN;
-				else if(args[i].matches(">")) query = Query.GREATER_THAN;
-				else if(args[i].matches("<=")) query = Query.LESS_THAN_OR_EQUAL_TO;
-				else if(args[i].matches(">=")) query = Query.GREATER_THAN_OR_EQUAL_TO;
-				else if(args[i].matches("=")) query = Query.EQUAL;
-				else if(args[i].matches("!=")) query = Query.DIFFERENT;
+				if(args[i].contains("<=")  && args[i].length() == 2) query = Query.LESS_THAN_OR_EQUAL_TO;
+				else if(args[i].contains(">=")  && args[i].length() == 2) query = Query.GREATER_THAN_OR_EQUAL_TO;
+				else if(args[i].contains("<") && args[i].length() == 1) query = Query.LESS_THAN;
+				else if(args[i].contains(">") && args[i].length() == 1) query = Query.GREATER_THAN;
+				else if(args[i].contains("=") && args[i].length() == 1) query = Query.EQUAL;
+				else if(args[i].contains("!=") && args[i].length() == 2) query = Query.DIFFERENT;
 				else throw new Exception("Unknown query operator: " + args[i]);
 				++i;
 				

@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class TestBW {
 	
-	ColumnType columnTypeTested = ColumnType.BWV;
+	ColumnType columnTypeTested = ColumnType.BWH;
 	long resultOne = 1L << (Long.SIZE - 1);
 	
 	
@@ -225,7 +225,7 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
-	
+	@Test
 	public void testQueryExemple2() throws Exception {
 		
 
@@ -392,7 +392,6 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
-	@Test
 	public void testQueryExample0() throws Exception {
 		
 
@@ -613,7 +612,7 @@ public class TestBW {
 	
 	
 	
-	/******************************* EXAMPLE 0: ADD PERFORMANCE ***************************/
+	/******************************* EXAMPLE 0: COMPLEX QUERY PERFORMANCE ***************************/
 	/**
 	 * 
 	 * Test for the performance of add for example 0 of the documentation.
@@ -631,7 +630,7 @@ public class TestBW {
 		int w = 64;
 		String query = "Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100";
 		
-		int columnInitialLength = 1000;
+		int columnInitialLength = 1000000;
 		int nbQueries = 100;
 		int nbQueriesWarmUp = 20;
 		

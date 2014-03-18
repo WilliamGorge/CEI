@@ -233,7 +233,7 @@ public class BWVColumn extends BWColumn
 		BitVector result = new BitVector();
 		for (int i = 0; i < Sno; ++i)
 		{
-			result.append(column.get(i).greaterThan(cstTab) & maskout, w);
+			result.append(column.get(i).greaterThan(cstTab), w);
 			column.get(i).recharge();
 		}
 		result.deleteEnd(w - nbDataLastSegment);
@@ -245,7 +245,7 @@ public class BWVColumn extends BWColumn
 		BitVector result = new BitVector();
 		for (int i = 0; i < Sno; ++i)
 		{
-			result.append(column.get(i).between(cstTab1, cstTab2) & maskout, w);
+			result.append(column.get(i).between(cstTab1, cstTab2), w);
 			column.get(i).recharge2();
 		}
 		result.deleteEnd(w - nbDataLastSegment);
@@ -257,7 +257,7 @@ public class BWVColumn extends BWColumn
 		BitVector result = new BitVector();
 		for (int i = 0; i < Sno; ++i)
 		{
-			result.append(column.get(i).equalTo(cstTab) & maskout, w);
+			result.append(column.get(i).equalTo(cstTab), w);
 			column.get(i).recharge();
 		}
 		result.deleteEnd(w - nbDataLastSegment);
@@ -269,7 +269,7 @@ public class BWVColumn extends BWColumn
 		BitVector result = new BitVector();
 		for (int i = 0; i < Sno; ++i)
 		{
-			result.append(column.get(i).differentTo(cstTab) & maskout, w);
+			result.append(column.get(i).differentTo(cstTab), w);
 			column.get(i).recharge();
 		}
 		result.deleteEnd(w - nbDataLastSegment);

@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * Class that represents Bit Vectors (ie bit arrays of unknown dimention).<br>
@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class BitVector {
 	
 	// Vector of bits, made of an arrayList of slots of the format "Long" ie slots of 64 bits
-	private LinkedList<Long> vector;
+	private ArrayList<Long> vector;
 	
 	// Size of the vector
 	private int size;
@@ -19,7 +19,7 @@ public class BitVector {
 	 * Constructor for BitVector.
 	 */
 	BitVector() {
-		vector = new LinkedList<Long>();
+		vector = new ArrayList<Long>();
 		size = 0;
 		index = 0;
 	}
@@ -57,13 +57,11 @@ public class BitVector {
 	 */
 	public void append(long bits, int length) {
 		
-		if(length > Long.SIZE) throw new IllegalArgumentException("Cannot append word that is longer than " + Long.SIZE +" bits, length given is " + length);
-		
 		// Init of the old slot, if it doesnt exists, is 0
 		long oldSlot = 0;
 		
 		// Gets the old slot and remove it
-		if(!vector.isEmpty()) oldSlot = vector.removeLast();
+		if(!vector.isEmpty()) oldSlot = vector.remove(vector.size() - 1);
 		
 		// Adds the bits data to this slot, when the data can fit entirely in the slot
 		if(index + length <= Long.SIZE) {
@@ -129,25 +127,14 @@ public class BitVector {
 	 * @see Long
 	 */
 	public void deleteEnd(int nbBitsToDelete) {
-		
-		if(nbBitsToDelete == 0) return;
-		
-		if(nbBitsToDelete > size) {
-			clear();
-			return;
-		}
-		
-		// Check if the number of bits to delete is too high
-		// We did this to symplify the code
-		if(nbBitsToDelete > Long.SIZE) 
-			nbBitsToDelete = Long.SIZE;
 
 		// Updating the size argument
 		size -= nbBitsToDelete;
 		
 		// Case when a slot has to be removed
 		if(nbBitsToDelete > index) {
-			vector.removeLast();
+			
+			vector.remove(vector.size() - 1);
 			index = index - nbBitsToDelete + Long.SIZE;
 		}
 		else
@@ -163,7 +150,7 @@ public class BitVector {
 		mask <<= (Long.SIZE - index);
 		
 		// Applying this mask to the slot
-		long maskedLong = vector.removeLast() & mask;
+		long maskedLong = vector.remove(vector.size() - 1) & mask;
 		vector.add(maskedLong);
 	}
 
@@ -173,7 +160,7 @@ public class BitVector {
 	 * @return bit vector
 	 * @author William Gorge and Benoit Sordet
 	 */
-	public LinkedList<Long> getVector() {
+	public ArrayList<Long> getVector() {
 		return vector;
 	}
 	
@@ -201,6 +188,8 @@ public class BitVector {
 		return value;
 	}
 	
+
+	
 	
 	/**
 	 * Displays the bit vector
@@ -214,7 +203,7 @@ public class BitVector {
 		for(int i = 0; i < vector.size() - 1; ++i) {
 			System.out.print(longtobitsString(vector.get(i)));
 		}
-		System.out.print(longtobitsString(vector.getLast()).substring(0, rest));
+		System.out.print(longtobitsString(vector.get(vector.size() - 1)).substring(0, rest));
 		System.out.print("\n");
 	}
 	
@@ -229,14 +218,16 @@ public class BitVector {
 		// Result returned
 		BitVector bvResult = new BitVector();
 		
+		int nbSlotsResult = vector.size();
+		
 		// Itteration on all the slots
-		for(int i = 0; i < vector.size() && i < bvOther.getVector().size(); ++i) {
+		for(int i = 0; i < nbSlotsResult; ++i) {
 			
 			// Compute and add it to the bit vector
 			long tempResult = this.vector.get(i) & bvOther.getVector().get(i);
 			bvResult.append(tempResult);
 		}
-		bvResult.setSize(Math.min(size, bvOther.size()));
+		bvResult.setSize(size);
 		return bvResult;
 	}
 	
@@ -252,14 +243,16 @@ public class BitVector {
 		// Result returned
 		BitVector bvResult = new BitVector();
 		
+		int nbSlotsResult = vector.size();
+		
 		// Itteration on all the slots
-		for(int i = 0; i < vector.size() && i < bvOther.getVector().size(); ++i) {
+		for(int i = 0; i < nbSlotsResult; ++i) {
 			
 			// Compute and add it to the bit vector
 			long tempResult = this.vector.get(i) | bvOther.getVector().get(i);
 			bvResult.append(tempResult);
 		}
-		bvResult.setSize(Math.min(size, bvOther.size()));
+		bvResult.setSize(size);
 		return bvResult;
 	}
 	
