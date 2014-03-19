@@ -1,4 +1,3 @@
-
 public class BWVSegment 
 {
 
@@ -8,9 +7,7 @@ public class BWVSegment
 	private int wordItinerator;
 	private int Ls;
 	private long mEq;
-	private long mEq2;
 	private long res;
-	private long res2;
 
 	// Default constructor
 	public BWVSegment() 
@@ -27,7 +24,6 @@ public class BWVSegment
 		k = sizeOfOneDatum;
 		Ls = 0;
 		res = 0;
-		res2 = 0;
 		w = widthOfWord;
 		wordItinerator = 0;
 		
@@ -38,7 +34,6 @@ public class BWVSegment
 		else if (Ls == w)
 			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 
-		mEq2 = mEq;
 		word = new long[k];
 	}
 	
@@ -62,8 +57,6 @@ public class BWVSegment
 			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 		else
 			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
-		
-		mEq2 = mEq;
 	}
 	
 	public void add(long[] nb)
@@ -75,13 +68,13 @@ public class BWVSegment
 		{ 	
 			for (j = Ls; j < Lss; ++j)
 			{
-				// On met ˆ 0 tous les bits de dataArray[j] sauf le (k-1-i) ime, et l'on affecte le tout ˆ mask.
+				// On met ï¿½ 0 tous les bits de dataArray[j] sauf le (k-1-i) iï¿½me, et l'on affecte le tout ï¿½ mask.
 				mask = nb[j-Ls] & move;
-				// On divise par 2 autant qu'il le faut pour que le rŽsultat soit dans le premier bit.
+				// On divise par 2 autant qu'il le faut pour que le rï¿½sultat soit dans le premier bit.
 				mask = (mask != 0) ? 1 : 0;
-				// On dŽplace ensuite le bit vers l'emplacement appropriŽ dans le but de l'ajouter ˆ v[i].
+				// On dï¿½place ensuite le bit vers l'emplacement appropriï¿½ dans le but de l'ajouter ï¿½ v[i].
 				mask <<= (Long.SIZE-j-1);
-				// On ajoute le rŽsultat ˆ v[i].
+				// On ajoute le rï¿½sultat ï¿½ v[i].
 				word[i] |= mask;
 			}
 			
@@ -94,8 +87,6 @@ public class BWVSegment
 			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 		else
 			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
-		
-		mEq2 = mEq;
 	}
 	
 	public long[] getProcessorWords()
@@ -127,20 +118,6 @@ public class BWVSegment
 		else
 			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
 	}	
-	
-	public void recharge2()
-	{
-		res = 0;
-		res2 = 0;
-		wordItinerator = 0;
-		
-		if (Ls < w)
-			mEq = ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
-		else
-			mEq = (w == Long.SIZE) ? ~0 : ~( ( 1L << (Long.SIZE - Ls) ) - 1 );
-		
-		mEq2 = mEq;
-	}
 
 	public long lessThan(long[] cst)
 	{		
@@ -168,6 +145,9 @@ public class BWVSegment
 	
 	public long between(long[] cst1, long[] cst2)
 	{
+		long res2 = 0;
+		long mEq2 = mEq;
+		
 		while ((mEq != 0 || mEq2 != 0) && wordItinerator < k)
 		{
 			res |= ( mEq & (~word[wordItinerator] & cst1[wordItinerator]) );
