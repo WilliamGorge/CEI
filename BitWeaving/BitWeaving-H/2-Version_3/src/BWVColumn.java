@@ -10,7 +10,6 @@ public class BWVColumn extends BWColumn
 	private int nbData;
 	
 	// Ajouts
-	private long maskout; // Masks the bits outside the theorical processor word
 	private int nbDataLastSegment; // Number of data in the last segment
 
 
@@ -22,16 +21,7 @@ public class BWVColumn extends BWColumn
 		nbData = 0;
 		column = new ArrayList<BWVSegment>();
 		nbDataLastSegment = 0;
-		
 		Sno = 0;
-		
-		// Mask that have w times 1, it is used to mask what's outside the procesor word
-		maskout =  1;
-		for(int i = 1; i < w; ++i) {
-			maskout <<= 1;
-			maskout |= 1L;
-		}
-
 	}
 	
 	public ArrayList<BWVSegment> getColumn()
@@ -48,7 +38,7 @@ public class BWVColumn extends BWColumn
 	{
 		if ((k < 63 && nb >= (1L << k)) || (k >= 63 && nb > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(nb + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(nb + " ne peut pas ÔøΩtre codÔøΩ en " + k + " bits.\n");
 		}
 		
 		if (nbData % w != 0) {
@@ -125,7 +115,7 @@ public class BWVColumn extends BWColumn
 		
 		if ((k < 63 && cst >= (1L << k)) || (k >= 63 && cst > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(cst + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(cst + " ne peut pas ÔøΩtre codÔøΩ en " + k + " bits.\n");
 		}
 		
 		while (i < k)
@@ -179,12 +169,12 @@ public class BWVColumn extends BWColumn
 		
 		if ((k < 63 && cst1 >= (1L << k)) || (k >= 63 && cst1 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(cst1 + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(cst1 + " ne peut pas ÔøΩtre codÔøΩ en " + k + " bits.\n");
 		}
 
 		if ((k < 63 && cst2 >= (1L << k)) || (k >= 63 && cst2 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(cst2 + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(cst2 + " ne peut pas ÔøΩtre codÔøΩ en " + k + " bits.\n");
 		}
 		
 		while (i < k)
@@ -246,7 +236,7 @@ public class BWVColumn extends BWColumn
 		for (int i = 0; i < Sno; ++i)
 		{
 			result.append(column.get(i).between(cstTab1, cstTab2), w);
-			column.get(i).recharge2();
+			column.get(i).recharge();
 		}
 		result.deleteEnd(w - nbDataLastSegment);
 		return result;
