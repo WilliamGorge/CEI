@@ -43,7 +43,7 @@ public class TestBW {
 	 * @author William Gorge and Benoit Sordet
 	 * @throws Exception
 	 */
-	
+	@Test
 	public void testQueryExemple1() throws Exception {
 	
 		System.out.println("\n\n\n\n\n\n\n*********** test Query Example1 ***********\n");
@@ -127,7 +127,7 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
-	
+	@Test
 	public void testAddAndQueryExemple1() throws Exception {
 		
 
@@ -307,8 +307,7 @@ public class TestBW {
 	 * @author William Gorge and Benoit Sordet
 	 * @throws Exception
 	 */
-
-	
+	@Test
 	public void testQueryExample3() throws Exception {
 		
 
@@ -392,6 +391,7 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
+	@Test
 	public void testQueryExample0() throws Exception {
 		
 
@@ -399,7 +399,7 @@ public class TestBW {
 		
 		int k = 36;
 		int w = 64;
-		int cst = 1;
+		int cst = 10000;
 		int columnInitialLength = 2172184;
 		int nbQueries = 100;
 		int nbQueriesWarmUp = 20;
@@ -621,7 +621,7 @@ public class TestBW {
 	 * @throws Exception
 	 */
 
-	
+	@Test
 	public void testComplexQueryExample0() throws Exception {
 		
 
