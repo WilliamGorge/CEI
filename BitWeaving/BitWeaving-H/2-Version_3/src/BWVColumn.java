@@ -73,7 +73,7 @@ public class BWVColumn extends BWColumn
 	{
 		if ((k < 63 && nb >= (1L << k)) || (k >= 63 && nb > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(nb + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(nb + " ne peut pas √™tre cod√© en " + k + " bits.\n");
 		}
 		
 		// If the number of data is not a multiple of w, this means the last segment is not full and we can add a datum in it.
@@ -182,7 +182,7 @@ public class BWVColumn extends BWColumn
 		
 		if ((k < 63 && cst >= (1L << k)) || (k >= 63 && cst > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(cst + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(cst + " ne peut pas √™tre cod√© en " + k + " bits.\n");
 		}
 		
 		// As explained in the publication and the report, we have to generate an array of cst, cstTab[0] being the repetition (Long.SIZE times) of the last bit of cst (the most important one)
@@ -263,12 +263,12 @@ public class BWVColumn extends BWColumn
 		
 		if ((k < 63 && cst1 >= (1L << k)) || (k >= 63 && cst1 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(cst1 + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(cst1 + " ne peut pas √™tre cod√© en " + k + " bits.\n");
 		}
 
 		if ((k < 63 && cst2 >= (1L << k)) || (k >= 63 && cst2 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			throw new IllegalArgumentException(cst2 + " ne peut pas être codé en " + k + " bits.\n");
+			throw new IllegalArgumentException(cst2 + " ne peut pas √™tre cod√© en " + k + " bits.\n");
 		}
 		
 		while (i < k)

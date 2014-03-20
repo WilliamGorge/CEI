@@ -98,6 +98,7 @@ public class BWVSegment
 		{ 	
 			for (j = Ls; j < Lss; ++j)
 			{
+<<<<<<< HEAD
 				// On met a 0 tous les bits de dataArray[j] sauf le (k-1-i) ieme, et l'on affecte le tout a mask.
 				mask = nb[j-Ls] & move;
 				// On divise par 2 autant qu'il le faut pour que le resultat soit dans le premier bit.
@@ -105,6 +106,15 @@ public class BWVSegment
 				// On deplace ensuite le bit vers l'emplacement approprie dans le but de l'ajouter a v[i].
 				mask <<= (Long.SIZE-j-1);
 				// On ajoute le resultat a v[i].
+=======
+				// On met � 0 tous les bits de dataArray[j] sauf le (k-1-i) i�me, et l'on affecte le tout � mask.
+				mask = nb[j-Ls] & move;
+				// On divise par 2 autant qu'il le faut pour que le r�sultat soit dans le premier bit.
+				mask = (mask != 0) ? 1 : 0;
+				// On d�place ensuite le bit vers l'emplacement appropri� dans le but de l'ajouter � v[i].
+				mask <<= (Long.SIZE-j-1);
+				// On ajoute le r�sultat � v[i].
+>>>>>>> FETCH_HEAD
 				word[i] |= mask;
 			}
 			
