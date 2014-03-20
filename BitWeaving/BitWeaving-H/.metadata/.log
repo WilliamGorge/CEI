@@ -3152,3 +3152,915 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp
 
 !ENTRY org.eclipse.core.net 1 0 2014-03-18 10:49:04.233
 !MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+!SESSION 2014-03-18 16:35:08.907 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-03-18 16:35:20.290
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+!SESSION 2014-03-18 17:55:22.654 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.ui.workbench 4 2 2014-03-18 17:55:31.637
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.ui.workbench".
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.Openable.openAncestors(Openable.java:504)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:240)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.PackageFragmentRoot.getKind(PackageFragmentRoot.java:477)
+	at org.eclipse.jdt.internal.core.PackageFragment.getKind(PackageFragment.java:290)
+	at org.eclipse.jdt.internal.core.PackageFragment.validateExistence(PackageFragment.java:506)
+	at org.eclipse.jdt.internal.core.Openable.exists(Openable.java:206)
+	at org.eclipse.jdt.internal.core.PackageFragment.exists(PackageFragment.java:174)
+	at org.eclipse.jdt.ui.StandardJavaElementContentProvider.exists(StandardJavaElementContentProvider.java:451)
+	at org.eclipse.jdt.ui.StandardJavaElementContentProvider.getParent(StandardJavaElementContentProvider.java:249)
+	at org.eclipse.jdt.internal.ui.javaeditor.JavaEditorBreadcrumb$JavaEditorBreadcrumbContentProvider.getParent(JavaEditorBreadcrumb.java:324)
+	at org.eclipse.jdt.internal.ui.javaeditor.breadcrumb.BreadcrumbViewer.buildItemChain(BreadcrumbViewer.java:603)
+	at org.eclipse.jdt.internal.ui.javaeditor.breadcrumb.BreadcrumbViewer.buildItemChain(BreadcrumbViewer.java:605)
+	at org.eclipse.jdt.internal.ui.javaeditor.breadcrumb.BreadcrumbViewer.inputChanged(BreadcrumbViewer.java:307)
+	at org.eclipse.jface.viewers.ContentViewer.setInput(ContentViewer.java:274)
+	at org.eclipse.jface.viewers.StructuredViewer.setInput(StructuredViewer.java:1634)
+	at org.eclipse.jdt.internal.ui.javaeditor.breadcrumb.EditorBreadcrumb.setInput(EditorBreadcrumb.java:169)
+	at org.eclipse.jdt.internal.ui.javaeditor.JavaEditorBreadcrumb.setInput(JavaEditorBreadcrumb.java:768)
+	at org.eclipse.jdt.internal.ui.javaeditor.JavaEditor.setBreadcrumbInput(JavaEditor.java:1959)
+	at org.eclipse.jdt.internal.ui.javaeditor.JavaEditor.showBreadcrumb(JavaEditor.java:1933)
+	at org.eclipse.jdt.internal.ui.javaeditor.JavaEditor.handlePreferenceStoreChanged(JavaEditor.java:2868)
+	at org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor.handlePreferenceStoreChanged(CompilationUnitEditor.java:1589)
+	at org.eclipse.ui.texteditor.AbstractTextEditor$PropertyChangeListener.propertyChange(AbstractTextEditor.java:714)
+	at org.eclipse.ui.texteditor.ChainedPreferenceStore.firePropertyChangeEvent(ChainedPreferenceStore.java:164)
+	at org.eclipse.ui.texteditor.ChainedPreferenceStore.handlePropertyChangeEvent(ChainedPreferenceStore.java:431)
+	at org.eclipse.ui.texteditor.ChainedPreferenceStore.access$0(ChainedPreferenceStore.java:408)
+	at org.eclipse.ui.texteditor.ChainedPreferenceStore$PropertyChangeListener.propertyChange(ChainedPreferenceStore.java:69)
+	at org.eclipse.ui.preferences.ScopedPreferenceStore$3.run(ScopedPreferenceStore.java:375)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.ui.preferences.ScopedPreferenceStore.firePropertyChangeEvent(ScopedPreferenceStore.java:372)
+	at org.eclipse.jdt.internal.ui.javaeditor.ToggleBreadcrumbAction.perspectiveActivated(ToggleBreadcrumbAction.java:117)
+	at org.eclipse.ui.internal.PerspectiveListenerList$1.run(PerspectiveListenerList.java:74)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:888)
+	at org.eclipse.ui.internal.PerspectiveListenerList.fireEvent(PerspectiveListenerList.java:58)
+	at org.eclipse.ui.internal.PerspectiveListenerList.firePerspectiveActivated(PerspectiveListenerList.java:72)
+	at org.eclipse.ui.internal.WorkbenchWindow.firePerspectiveActivated(WorkbenchWindow.java:1413)
+	at org.eclipse.ui.internal.WorkbenchPage$18.runWithException(WorkbenchPage.java:3262)
+	at org.eclipse.ui.internal.StartupThreading$StartupRunnable.run(StartupThreading.java:31)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3404)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3101)
+	at org.eclipse.ui.application.WorkbenchAdvisor.openWindows(WorkbenchAdvisor.java:803)
+	at org.eclipse.ui.internal.Workbench$28.runWithException(Workbench.java:1384)
+	at org.eclipse.ui.internal.StartupThreading$StartupRunnable.run(StartupThreading.java:31)
+	at org.eclipse.swt.widgets.RunnableLock.run(RunnableLock.java:35)
+	at org.eclipse.swt.widgets.Synchronizer.runAsyncMessages(Synchronizer.java:134)
+	at org.eclipse.swt.widgets.Display.runAsyncMessages(Display.java:3404)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:3101)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:2316)
+	at org.eclipse.ui.internal.Workbench.access$4(Workbench.java:2221)
+	at org.eclipse.ui.internal.Workbench$5.run(Workbench.java:500)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:332)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:493)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:113)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:194)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:110)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:79)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:368)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:179)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+
+!ENTRY org.eclipse.core.net 1 0 2014-03-18 17:55:33.588
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+!SESSION 2014-03-19 03:24:53.798 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.jdt.core 4 4 2014-03-19 03:25:18.841
+!MESSAGE Exception occurred during problem detection:
+----------------------------------- SOURCE BEGIN -------------------------------------
+import java.util.ArrayList;
+
+
+public class MainBWPerfs {
+	
+	static long resultOne = 1L << (Long.SIZE - 1);
+	
+
+	/**
+	 * @param args
+	 * @throws Exception 
+	 */
+	public static void main(String[] args) throws Exception {
+		/*
+		for(int k = 1; k <= 63; ++k)
+			testQueryExample0(k, ColumnType.BWH, "<", 1); // Query "< 1" sur une colonne BWH avec k qui varie
+
+		for(int k = 1; k <= 64; ++k)
+			testQueryExample0(k, ColumnType.BWV, "<", 1); // Query "< 1" sur une colonne BWV avec k qui varie
+		
+		for(int k = 1; k <= 63; ++k)
+			testAddExample0(k, ColumnType.BWH);
+		
+		for(int k = 1; k <= 64; ++k)
+			testAddExample0(k, ColumnType.BWV);*/
+		
+
+
+		System.out.println("\n\n\n\n\n\n***\nPERFORMANCE TEST TOWARDS THE NUMBER OF DATA\n****\n");
+		
+		for(int nbDataMultipilucator = 1; nbDataMultipilucator < 50; ++nbDataMultipilucator)
+			testComplexQueryExample0(nbDataMultipilucator*300, 0, ColumnType.BWH);
+		
+		for(int nbDataMultipilucator = 1; nbDataMultipilucator < 50; ++nbDataMultipilucator)
+			testComplexQueryExample0(nbDataMultipilucator*300, 0, ColumnType.BWV);
+		
+		
+		/*
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n***\nPERFORMANCE TEST TOWARDS THE SIZE OF DATA\n***\n");
+		
+		for(int kAdd = 0; kAdd <= 31; ++kAdd)
+			testComplexQueryExample0(1000000, kAdd, ColumnType.BWH);
+		
+		for(int kAdd = 0; kAdd <= 31; ++kAdd)
+			testComplexQueryExample0(1000000, kAdd, ColumnType.BWH);
+			*/
+
+		System.out.println("\n\n\nPERFORMANCE TEST FINISHED\n");
+	}
+	
+	/**
+	 * Returns the binary string with zeros of the long l
+	 * This is a little modification of Long.toBinaryString(long)
+	 * @param long l: long to convert to a string of bits
+	 * @author William Gorge
+	 */
+	static String longtobitsString(long l){
+		String s = "";
+		for(int i = 0; i < Long.numberOfLeadingZeros(l); ++i) {
+			s += "0";
+		}
+		if(l != 0) s += Long.toBinaryString(l);
+		return s;
+	}
+
+	
+	
+	/******************************* EXAMPLE 0: QUERY PERFORMANCE ***************************/
+	/**
+	 * 
+	 * Test for the performance of query for example 0 of the documentation.
+	 * A random column is created and many queries are applied to it to measure performance
+	 * @param k Size of one datum
+	 * @param columnTypeTested Type of the column tested
+	 * @param query query to apply to the column. Ex: "<" , "=" , "!=" , ">="
+	 * @param cst constant for this query
+	 * @author William Gorge and Benoit Sordet
+	 * @throws Exception
+	 */
+	
+	static void testQueryExample0(int k, ColumnType columnTypeTested, String query, int cst) throws Exception {
+		
+
+		System.out.println("\n\n\n*********** Query, k=" + k + ", columnTypeTested=" + columnTypeTested + " ***********\n");
+		
+		int w = 64;
+		int columnInitialLength = 2172184;
+		int nbQueries = 100;
+		int nbQueriesWarmUp = 20;
+		
+		ArrayList<Long> column = new ArrayList<Long>();
+		long max = (long) (Math.pow(2, k) - 1);
+		
+		// Initialization store
+		BWStore store = new BWStore(w);
+		
+		// Creating column
+		store.addColumn("Column1", columnTypeTested, k);
+		
+		// Create the data and load the store
+		for(int i = 1; i < columnInitialLength; ++i) {
+			
+			// Generate the data and memorizing it with native ArrayList
+			long datumGenerated = (long) (Math.random()*max);
+			column.add(datumGenerated);
+			
+			// Loading store at the same time
+			store.addDatum(datumGenerated, "Column1");
+			
+		}
+		
+		/***************** BW QUERY *****************/
+		// Measuring time
+		long timeTotalQuery = 0;
+		BitVector result = null;
+		
+		// Query loop 
+		for(int i = 0; i < nbQueries + nbQueriesWarmUp; ++i) {
+			
+			// Measuring time
+			long timeBeforeQuery = System.nanoTime();
+	
+			// Doing the query
+			result = store.query("Column1 " + query + " " + cst);
+			
+			// Measuring time
+			if(i >= nbQueriesWarmUp) timeTotalQuery += System.nanoTime() - timeBeforeQuery;
+		}
+		
+		/***************** NAIVE QUERY *****************/
+		// Measuring time
+		long timeTotalNaiveQuery = 0;
+		BitVector resultWanted = new BitVector();
+
+		// Query loop
+		for(int n = 0; n < nbQueries + nbQueriesWarmUp; ++n) {
+
+			// Clear the result for the next query
+			resultWanted.clear();
+			
+			// Measuring time
+			long timeBeforeNaiveQuery = System.nanoTime();
+			
+			// Naive query
+			for(int i = 0; i < column.size(); ++i) {
+				if(column.get(i)  < cst)
+					resultWanted.append(resultOne, 1);
+				else
+					resultWanted.append(0, 1);
+			}
+			
+			// Measuring time
+			if(n>= nbQueriesWarmUp) timeTotalNaiveQuery += System.nanoTime() - timeBeforeNaiveQuery;
+		}
+		
+		/******** DISPLAY THE PERFORMANCE *******/
+		System.out.println("Average time per data in column:\n\n" + 
+				   
+				   "	" + columnTypeTested + " Query ----------- " + (((float) timeTotalQuery)/((float)( nbQueries*columnInitialLength))) + " ns per data in column\n" +
+				   
+				   "	Naive Query --------- " + ((float) timeTotalNaiveQuery)/((float) nbQueries*columnInitialLength) + " ns per data in column\n");
+
+		
+		/****** CHECK THE RESULT ******/		
+		// Check the result
+		if(result.equals(resultWanted)) {
+			System.out.println("-- Test Successful --");
+		}
+		else {
+			for(int i = 0; i < result.getVector().size(); ++i) {
+
+				if(result.getVector().get(i).longValue() !=  resultWanted.getVector().get(i).longValue()) {
+						System.out.println(" -- FAIL here: from result " + i*Long.SIZE + " to " + + ((i+1)*Long.SIZE-1) + " ---");
+						System.out.println("	Wanted:   " + longtobitsString(resultWanted.getVector().get(i)));
+						System.out.println("	Obtained: " + longtobitsString(result.getVector().get(i)));
+						System.out.println();
+				}
+			}
+			System.out.println("\n!!!!!!! Test FAILED !!!!!!!");
+		}
+	}
+	
+	/******************************* EXAMPLE 0: ADD PERFORMANCE ***************************/
+	/**
+	 * 
+	 * Test for the performance of add for example 0 of the documentation.
+	 * A random column is created and many queries are applied to it to measure performance
+	 * @author William Gorge and Benoit Sordet
+	 * @throws Exception
+	 */
+	
+	static void testAddExample0(int k, ColumnType columnTypeTested) throws Exception {
+		
+
+		System.out.println("\n\n\n*********** Add, k=" + k + "  columnTypeTested=" + columnTypeTested + " ***********\n");
+		
+		int w = 64;
+		int columnInitialLength = 2172184;
+		int nbAdd = 100;
+		int nbAddWarmUp = 20;
+		
+		ArrayList<Long> column = new ArrayList<Long>();
+		long max = (long) (Math.pow(2, k) - 1);
+		
+		// Initialization store
+		BWStore store = new BWStore(w);
+		
+		// Creating column
+		store.addColumn("Column1", columnTypeTested, k);
+		
+		// Create the data and load the store
+		for(int i = 1; i < columnInitialLength; ++i) {
+			
+			// Generate the data and memorizing it with native ArrayList
+			long datumGenerated = (long) (Math.random()*max);
+			column.add(datumGenerated);
+			
+			// Loading store at the same time
+			store.addDatum(datumGenerated, "Column1");
+			
+		}
+		
+		/***************** BW ADD *****************/
+		// Measuring time
+		long timeTotalAdd = 0;
+		
+		// Query loop 
+		for(int i = 0; i < nbAdd + nbAddWarmUp; ++i) {
+			
+			// Generate the data and memorizing it with native ArrayList
+			long datumGenerated = (long) (Math.random()*max);
+			column.add(datumGenerated);
+			
+			// Measuring time
+			long timeBeforeAdd = System.nanoTime();
+	
+			// Doing the query
+			store.addDatum(datumGenerated, "Column1");
+			
+			// Measuring time
+			if(i >= nbAddWarmUp) timeTotalAdd += System.nanoTime() - timeBeforeAdd;
+		}
+		
+		/******** DISPLAY THE PERFORMANCE *******/
+		System.out.println("Average time per data in column:\n\n" + 
+				   
+				   "	" + columnTypeTested + " Add one datum ------ " + (((float) timeTotalAdd)/((float)( nbAdd*columnInitialLength))) + " ns per data in column\n");
+		
+		
+		/***************** NAIVE and BW QUERY to check if it works good *****************/
+		// Measuring time
+		long cst = (long) (Math.random()*Math.pow(2, k));
+		BitVector result = store.query("Column1 < " + cst);
+		BitVector resultWanted = new BitVector();
+
+		// Clear the result for the next query
+		resultWanted.clear();
+		
+		// Naive query
+		for(int i = 0; i < column.size(); ++i) {
+			if(column.get(i)  < cst)
+				resultWanted.append(resultOne, 1);
+			else
+				resultWanted.append(0, 1);
+		}
+		
+		/****** CHECK THE RESULT ******/		
+		// Check the result
+		if(result.equals(resultWanted)) {
+			System.out.println("-- Test Successful --");
+		}
+		else {
+			for(int i = 0; i < result.getVector().size(); ++i) {
+
+				if(result.getVector().get(i).longValue() !=  resultWanted.getVector().get(i).longValue()) {
+						System.out.println(" -- FAIL here: from result " + i*Long.SIZE + " to " + + ((i+1)*Long.SIZE-1) + " ---");
+						System.out.println("	Wanted:   " + longtobitsString(resultWanted.getVector().get(i)));
+						System.out.println("	Obtained: " + longtobitsString(result.getVector().get(i)));
+						System.out.println();
+				}
+			}
+			System.out.println("\n!!!!!!! Test FAILED !!!!!!!");
+		}
+	}
+	
+	public static void testComplexQueryExample0(int nbData, int kAdd, ColumnType columnTypeTested) throws Exception {
+		
+
+		System.out.println("\n\n\n\n\n\n\n*********** Complex query  nbData=" + nbData +"  kAdd=" + kAdd + "  columnTypeTested=" + columnTypeTested  + "***********\n");
+		
+		int w = 64;
+		String query = "Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100";
+		
+		int columnInitialLength = nbData;
+		int nbQueries = 100;
+		int nbQueriesWarmUp = 20;
+		
+		int[] kTab = new int[5];
+		kTab[0] = 16 + kAdd;
+		kTab[1] = 8 + kAdd;
+		kTab[2] = 1 + kAdd;
+		kTab[3] = 3 + kAdd;
+		kTab[4] = 32 + kAdd;
+	
+		ArrayList<ArrayList<Long>> columns = new ArrayList<ArrayList<Long>>();
+			
+		// Initialization store
+		BWStore store = new BWStore(w);
+		
+		for(int n = 0; n < kTab.length; ++n) {
+			
+			long max = (long) (Math.pow(2, kTab[n]) - 1);
+			
+			// Creating column
+			store.addColumn("Column" + (n+1), columnTypeTested, kTab[n]);
+			
+			// Creating raw column
+			ArrayList<Long> column = new ArrayList<Long>();
+			
+			// Create the data and load the store
+			for(int i = 0; i < columnInitialLength - 1; ++i) {
+				
+				// Generate the data and memorizing it with native ArrayList
+				long datumGenerated = (long) (Math.random()*max);
+				column.add(datumGenerated);
+				
+				// Loading store at the same time
+				store.addDatum(datumGenerated, "Column" + (n+1));
+			}
+			columns.add(column);
+		}
+		
+		/***************** BW Complex Query *****************/
+		// Measuring time
+		long timeTotalQuery = 0;
+		BitVector result = new BitVector();
+		
+		// Query loop 
+		for(int i = 0; i < nbQueries + nbQueriesWarmUp; ++i) {
+			
+			// Measuring time
+			long timeBeforeQuery = System.nanoTime();
+	
+			// Doing the query
+			result = store.query(query);
+			
+			// Measuring time
+			if(i >= nbQueriesWarmUp) timeTotalQuery += System.nanoTime() - timeBeforeQuery;
+			
+		}
+		
+		/***************** NAIVE QUERY *****************/
+		// Measuring time
+		long timeTotalNaiveQuery = 0;
+		BitVector resultWanted = new BitVector();
+
+		// Query loop
+		for(int n = 0; n < nbQueries + nbQueriesWarmUp; ++n) {
+
+			// Clear the result for the next query
+			resultWanted.clear();
+			
+			// Measuring time
+			long timeBeforeNaiveQuery = System.nanoTime();
+			
+			// Naive query
+			// Column1 < 100 or Column2 = 10 or Column3 = 0 and Column4 >= 1 or Column5 < 100"
+			for(int i = 0; i < columnInitialLength - 1; ++i) {
+				if((((columns.get(0).get(i) < 100 
+						|| columns.get(1).get(i) == 10)
+						|| columns.get(2).get(i) == 0 )
+						&& columns.get(3).get(i) >=1 )
+						|| columns.get(4).get(i) < 100 )
+					resultWanted.append(resultOne, 1);
+				else
+					resultWanted.append(0, 1);
+			}
+			
+			// Measuring time
+			if(n>= nbQueriesWarmUp) timeTotalNaiveQuery += System.nanoTime() - timeBeforeNaiveQuery;
+		}
+		
+		/******** DISPLAY THE PERFORMANCE *******/
+		System.out.println("\n\n" + 
+				   "Average time per data in column:\n\n" + 
+				   
+				   "	" + columnTypeTested + " Complex Query ------ " + (((float) timeTotalQuery)/((float)( nbQueries*columnInitialLength))) + " ns per data in column\n" +
+				   
+				   "	Naive Query --------- " + ((float) timeTotalNaiveQuery)/((float) nbQueries*columnInitialLength) + " ns per data in column\n");
+
+		
+		/****** CHECK THE RESULT ******/		
+		// Check the result
+		if(result.equals(resultWanted)) {
+			System.out.println("-- Test Successful --");
+		}
+		else {
+			for(int i = 0; i < result.getVector().size(); ++i) {
+
+				if(result.getVector().get(i).longValue() !=  resultWanted.getVector().get(i).longValue()) {
+						System.out.println(" -- FAIL here: from result " + i*Long.SIZE + " to " + + ((i+1)*Long.SIZE-1) + " ---");
+						System.out.println("	Wanted:   " + longtobitsString(resultWanted.getVector().get(i)));
+						System.out.println("	Obtained: " + longtobitsString(result.getVector().get(i)));
+						System.out.println();
+				}
+			}
+			System.out.println("\n-- Test Failed --");
+			throw new Exception("Test failed");
+		}
+		
+				   
+	}
+	
+
+}
+
+----------------------------------- SOURCE END -------------------------------------
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+
+!ENTRY org.eclipse.jdt.ui 4 2 2014-03-19 03:25:18.932
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.jdt.ui".
+!STACK 1
+Java Model Exception: java.lang.NullPointerException
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:222)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+Caused by: java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	... 17 more
+Caused by: java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+!SUBENTRY 1 org.eclipse.jdt.core 4 1005 2014-03-19 03:25:18.932
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+!SUBENTRY 1 org.eclipse.jdt.core 4 1005 2014-03-19 03:25:18.933
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+
+!ENTRY org.eclipse.jdt.ui 4 0 2014-03-19 03:25:18.957
+!MESSAGE Error in JDT Core during reconcile
+!STACK 1
+Java Model Exception: java.lang.NullPointerException
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:222)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+Caused by: java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	... 17 more
+Caused by: java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+!SUBENTRY 1 org.eclipse.jdt.core 4 1005 2014-03-19 03:25:18.957
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.getBundlesFromFile(P2Utils.java:125)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.readBundles(P2Utils.java:69)
+	at org.eclipse.jdt.internal.junit.buildpath.P2Utils.findBundle(P2Utils.java:166)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport$JUnitPluginDescription.getLibraryEntry(BuildPathSupport.java:70)
+	at org.eclipse.jdt.internal.junit.buildpath.BuildPathSupport.getJUnit4LibraryEntry(BuildPathSupport.java:169)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.getNewContainer(JUnitContainerInitializer.java:103)
+	at org.eclipse.jdt.internal.junit.buildpath.JUnitContainerInitializer.initialize(JUnitContainerInitializer.java:90)
+	at org.eclipse.jdt.internal.core.JavaModelManager.initializeContainer(JavaModelManager.java:2608)
+	at org.eclipse.jdt.internal.core.JavaModelManager.getClasspathContainer(JavaModelManager.java:1778)
+	at org.eclipse.jdt.core.JavaCore.getClasspathContainer(JavaCore.java:2652)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2561)
+	at org.eclipse.jdt.internal.core.JavaProject.resolveClasspath(JavaProject.java:2662)
+	at org.eclipse.jdt.internal.core.JavaProject.getResolvedClasspath(JavaProject.java:1861)
+	at org.eclipse.jdt.internal.core.JavaProject.buildStructure(JavaProject.java:424)
+	at org.eclipse.jdt.internal.core.Openable.generateInfos(Openable.java:258)
+	at org.eclipse.jdt.internal.core.JavaElement.openWhenClosed(JavaElement.java:515)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:252)
+	at org.eclipse.jdt.internal.core.JavaElement.getElementInfo(JavaElement.java:238)
+	at org.eclipse.jdt.internal.core.JavaProject.getJavaProjectElementInfo(JavaProject.java:1556)
+	at org.eclipse.jdt.internal.core.JavaProject.newNameLookup(JavaProject.java:2241)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:56)
+	at org.eclipse.jdt.internal.core.SearchableEnvironment.<init>(SearchableEnvironment.java:63)
+	at org.eclipse.jdt.internal.core.CancelableNameEnvironment.<init>(CancelableNameEnvironment.java:26)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:158)
+	at org.eclipse.jdt.internal.core.CompilationUnitProblemFinder.process(CompilationUnitProblemFinder.java:243)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.makeConsistent(ReconcileWorkingCopyOperation.java:190)
+	at org.eclipse.jdt.internal.core.ReconcileWorkingCopyOperation.executeOperation(ReconcileWorkingCopyOperation.java:89)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.run(JavaModelOperation.java:728)
+	at org.eclipse.jdt.internal.core.JavaModelOperation.runOperation(JavaModelOperation.java:788)
+	at org.eclipse.jdt.internal.core.CompilationUnit.reconcile(CompilationUnit.java:1242)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:126)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.access$0(JavaReconcilingStrategy.java:108)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy$1.run(JavaReconcilingStrategy.java:89)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.reconcile(JavaReconcilingStrategy.java:87)
+	at org.eclipse.jdt.internal.ui.text.java.JavaReconcilingStrategy.initialReconcile(JavaReconcilingStrategy.java:178)
+	at org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy.initialReconcile(CompositeReconcilingStrategy.java:114)
+	at org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy.initialReconcile(JavaCompositeReconcilingStrategy.java:133)
+	at org.eclipse.jface.text.reconciler.MonoReconciler.initialProcess(MonoReconciler.java:105)
+	at org.eclipse.jdt.internal.ui.text.JavaReconciler.initialProcess(JavaReconciler.java:398)
+	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:173)
+
+!ENTRY org.eclipse.core.net 1 0 2014-03-19 03:25:21.008
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+!SESSION 2014-03-20 12:16:34.270 -----------------------------------------------
+eclipse.buildId=I20090611-1540
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -product org.eclipse.epp.package.jee.product -keyring /Users/doubletrap/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-03-20 12:18:29.554
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
