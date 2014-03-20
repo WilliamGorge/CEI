@@ -1,95 +1,113 @@
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
-public class BWVColumn implements BitWeavingVInterface
+/**
+ * Class for the use of the BitWeavingV Method, more specifically for the columns.<br>
+ * An instance of this class represents a column of data where a query with the BitWeavingV method can be used.<br>
+ * It deals with the data in the column: creation, addition, return the size.<br>
+ * It uses the interface BitWeavingVInterface.<br>
+ * @author Benoit Sordet
+ */
+
+public class BWVColumn extends BWColumn
 {
-	private ArrayList<BWVSegment> column; 			// Processor words
-	private int k;							// Size of one datum
-	private int Sno;
-	private int w;
-	private int nbData;
-	private long[] result;
+	private ArrayList<BWVSegment> column; 	// Colomn on witch perform the scan
+	
+	// Name of the column
+	private String name;
 
-	public BWVColumn() 
-	{
-		k = 0;
-		Sno = 0;
-		w = 0;
-		nbData = 0;
-		result = null;
-		column = null;
-	}
+	// Constants of the column
+	private int k;				// Size of one datum
+	private int w;				// Size of processor word
+	
+	// Variables of the column
+	private int Sno;			// Number of segments
+	private int nbData;			// Number of data in the column
+	private int nbDataLastSegment; 		// Number of data in the last segment
 
-	public BWVColumn(long[] dataArray, int sizeOfOneDatum, int widthOfWord)
+
+	/**
+	 * Constructor of a BWV column with a processor word and a datum size given (format of the data).
+	 * @param sizeOfOneDatum size (in bits) of one data in the column, depends on the format of the data. It is the number of bits with which the data is encoded.
+	 * @param widthOfWord size of the processor word
+	 */
+	public BWVColumn(String name, int sizeOfOneDatum, int widthOfWord)
 	{
+		// Instaciation of the arguments
 		k = sizeOfOneDatum;
 		w = widthOfWord;
-		nbData = dataArray.length;
+		this.name = name;
+		nbData = 0;
 		column = new ArrayList<BWVSegment>();
-
-		int i, j, p = nbData % w;
-		Sno = (p > 0) ? nbData/w+1 : nbData/w;
-
-		long[] tempArray = new long[w];
-
-		for (i = 0; i < Sno - 1; ++i)
-		{
-			for (j = 0; j < w; ++j)
-				tempArray[j]= dataArray[w*i+j];
-			
-			BWVSegment someSegment = new BWVSegment(tempArray, k, w);
-			column.add(someSegment);
-		}
-
-		p = (p != 0) ? p : w;
-		tempArray = new long[p];
-
-		for (j = 0; j < p; ++j)
-			tempArray[j] = dataArray[(Sno-1)*w+j];
-
-		BWVSegment someSegment = new BWVSegment(tempArray, k, w);
-		column.add(someSegment);
-		result = new long[Sno];
+		nbDataLastSegment = 0;
+		Sno = 0;
 	}
 	
+	/**
+	 * Gets the attatched column, as an array of BWVSegment<br><br>
+	 * !!! USE FOR DEBUG ONLY !!!<br>
+	 * It will be deleted for the relase version<br>
+	 * @return column
+	 */
 	public ArrayList<BWVSegment> getColumn()
 	{
 		return column;
 	}
 	
+	/**
+	 * Returns the size of the column
+	 * @return column.length
+	 */
 	public int size()
 	{
 		return nbData;
 	}
-	
+
+	/*** ADD ONE DATUM FUNCTION ***/
+	/**
+	 * Adds one datum to the column
+	 * @param datum: datum to add<br><br>
+	 * @author Benoit Sordet
+	 * @throws Exception throws an exeption when you try to add a datum to a full segment. Can happen when the segment is not handled in a good way.
+	 */
 	public void add(long nb)
 	{
 		if ((k < 63 && nb >= (1L << k)) || (k >= 63 && nb > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			System.out.println(nb + " ne peut pas être codé en " + k + " bits.\n");
-			return;
+			throw new IllegalArgumentException(nb + " ne peut pas être codé en " + k + " bits.\n");
 		}
 		
+		// If the number of data is not a multiple of w, this means the last segment is not full and we can add a datum in it.
 		if (nbData % w != 0)
+		{
+			// Adding the datum to the segment
 			column.get(Sno-1).add(nb);
+			// Refreshing nbDataLastSegment
+			++nbDataLastSegment;
+		}
+		
+		// Else it means the number of data is a multiple of w, and all segments are full. We have to create another segment in order for us to add the datum.
 		else
 		{	
-			long[] tab = new long[1];
-			tab[0] = nb;
-			
-			BWVSegment someSegment = new BWVSegment(tab, k, w);
+			// Creation of the segment		
+			BWVSegment someSegment = new BWVSegment(k, w);
+			// Adding the datum to the segment
+			someSegment.add(nb);
+			// Appending the newly created segment to the column
 			column.add(someSegment);
+			// Refreshing nbDataLastSegment
+			nbDataLastSegment = 1;
+			// Refreshing Sno
 			++Sno;
-			result = new long[Sno];
 		}
 	
+		// Refreshing nbData
 		++nbData;
 	}
-	
+	/*
 	public void add(long nb[])
 	{
 		int n = nb.length;
-		int roomLeft = (nbData % w == 0) ? 0 : w - (nbData % w);
+		int roomLeft = (nbData % w == 0) ? 0 : nbData - (nbData % w);
 		
 		if (n <= roomLeft)
 		{
@@ -130,35 +148,61 @@ public class BWVColumn implements BitWeavingVInterface
 			BWVSegment someSegment = new BWVSegment(tab, k, w);
 			column.add(someSegment);
 			Sno += (newFullSegmentCreatedNb+1);
-			result = new long[Sno];
 		}
 		
 		nbData += n;
-	}
+	}*/
 
-	public long[] query(Query queryName, long cst)
+	/*** QUERY FUNCTION ***/
+	/**
+	 * Performs the query queryName with the constant cst on the column of the instance of the BitWeavingV object.<br>
+	 * Returns the result bit vector<br>
+	 * @param query among enum Query:
+		<blockquote>
+			DIFFERENT<br>
+			EQUAL<br>
+			LESS THAN<br>
+			LESS THAN OR EQUAL TO<br>
+			GREATER THAN<br>
+			GREATER THAN OR EQUAL TO<br>
+		</blockquote>
+		cst1: Constant to compare<br>
+		cst2: Constant to compare<br><br>
+	 * @throws IllegalArgumentException thrown if query has an unknown value or if cst cannot be encoded in k bits
+	 * @author Benoit Sordet
+	 */
+	public BitVector query(Query queryName, long cst) throws IllegalArgumentException
 	{	
+		// Creation of the tab containing all bits of cst
 		long[] cstTab = new long[k];
+		// Creation of the mask we will use to select every bit of cst once at a time
 		long mask = ( 1L << (k-1) );
+		// Loop iterator
 		int i = 0;
 		
 		if ((k < 63 && cst >= (1L << k)) || (k >= 63 && cst > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			System.out.println(cst + " ne peut pas être codé en " + k + " bits.\n");
-			return cstTab;
+			throw new IllegalArgumentException(cst + " ne peut pas être codé en " + k + " bits.\n");
 		}
 		
+		// As explained in the publication and the report, we have to generate an array of cst, cstTab[0] being the repetition (Long.SIZE times) of the last bit of cst (the most important one)
 		while (i < k)
 		{
+			// If the i_th bit of cst is 1, put Long.SIZE 1 in cstTab[i]
 			if ( (mask & cst) != 0 )
 				cstTab[i] = ~0;
+				
+			// Else the i_th bit of cst is 0, put Long.SIZE 0 in cstTab[i]
 			else
 				cstTab[i] = 0;
 			
+			// Refreshing the mask for next iteration
 			mask >>>= 1;
+			// Refreshing the loop iterator
 			++i;
 		}
 		
+		// Given queryName, the appropriate query is to be launched
 		switch (queryName)
 		{
 			case LESS_THAN:
@@ -180,75 +224,80 @@ public class BWVColumn implements BitWeavingVInterface
 				return greaterThanOrEqualTo(cstTab);
 	
 			default:
-				System.out.println("No such query.");
-				break;
+				throw new IllegalArgumentException("No such query.");
 		}
-		
-		return null;
 	}
 	
-	
-	public long[] query(Query queryName, long cst1, long cst2)
+	/*** EXTENDED QUERY FUNCTION FOR THE BETWEEN QUERY ***/
+	/**
+	 * Performs only the query BETWEEN with the constants cst1 and cst2 on the column of the instance of the BitWeavingV object.<br>
+	 * Returns the result bit vector<br>
+	 * @param query among enum Query:
+		<blockquote>
+			DIFFERENT<br>
+			EQUAL<br>
+			LESS THAN<br>
+			LESS THAN OR EQUAL TO<br>
+			GREATER THAN<br>
+			GREATER THAN OR EQUAL TO<br>
+		</blockquote>
+		cst1: Constant to compare<br><br>
+	 * @throws IllegalArgumentException thrown if query has an unknown value or if cst cannot be encoded in k bits
+	 * @author Benoit Sordet
+	 */
+	public BitVector query(Query queryName, long cst1, long cst2) throws IllegalArgumentException
 	{	
+		// Creation of the tab containing all bits of cst1
 		long[] cstTab1 = new long[k];
+		// Creation of the tab containing all bits of cst2
 		long[] cstTab2 = new long[k];
+		// Creation of the mask we will use to select every bit of cst once at a time
 		long mask = ( 1L << (k-1) );
+		// Loop iterator
 		int i = 0;
 		
 		if (cst1 > cst2)
 		{
-			System.out.println(cst1 + " est strictement plus grand que " + cst2 + ".");
-			return cstTab1;
+			throw new IllegalArgumentException(cst1 + " est strictement plus grand que " + cst2 + ".");
 		}
 		
 		if ((k < 63 && cst1 >= (1L << k)) || (k >= 63 && cst1 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			System.out.println(cst1 + " ne peut pas être codé en " + k + " bits.\n");
-			return cstTab1;
+			throw new IllegalArgumentException(cst1 + " ne peut pas être codé en " + k + " bits.\n");
 		}
 
 		if ((k < 63 && cst2 >= (1L << k)) || (k >= 63 && cst2 > (1L << 62) - 1 + (1L << 62)) || (k > 64))
 		{
-			System.out.println(cst2 + " ne peut pas être codé en " + k + " bits.\n");
-			return cstTab2;
+			throw new IllegalArgumentException(cst2 + " ne peut pas être codé en " + k + " bits.\n");
 		}
 		
 		while (i < k)
 		{
+			// If the i_th bit of cst1 is 1, put Long.SIZE 1 in cstTab1[i]
 			if ( (mask & cst1) != 0 )
 				cstTab1[i] = ~0;
+				
+			// Else the i_th bit of cst1 is 0, put Long.SIZE 0 in cstTab1[i]
 			else
 				cstTab1[i] = 0;
 			
+			// If the i_th bit of cst2 is 1, put Long.SIZE 1 in cstTab2[i]
 			if ( (mask & cst2) != 0 )
 				cstTab2[i] = ~0;
+				
+			// Else the i_th bit of cst2 is 0, put Long.SIZE 0 in cstTab2[i]
 			else
 				cstTab2[i] = 0;
 			
+			// Refreshing the mask for next iteration
 			mask >>>= 1;
+			// Refreshing the loop iterator
 			++i;
 		}
 		
+		// Given queryName, the appropriate query (BETWEEN here) is to be launched
 		switch (queryName)
 		{
-			case LESS_THAN:
-				return lessThan(cstTab1);
-	
-			case GREATER_THAN:
-				return greaterThan(cstTab1);
-	
-			case EQUAL:
-				return equalTo(cstTab1);
-	
-			case DIFFERENT:
-				return differentTo(cstTab1);
-	
-			case LESS_THAN_OR_EQUAL_TO:
-				return lessThanOrEqualTo(cstTab1);
-	
-			case GREATER_THAN_OR_EQUAL_TO:
-				return greaterThanOrEqualTo(cstTab1);
-		
 			case BETWEEN:
 				return between(cstTab1, cstTab2);
 	
@@ -260,216 +309,192 @@ public class BWVColumn implements BitWeavingVInterface
 		return null;
 	}
 
-	private long[] lessThan(long[] cstTab)
+	/*** CORE FUNCTION OF THE QUERY "X < cst" ***/
+	private BitVector lessThan(long[] cstTab)
 	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column.get(i).lessThan(cstTab);
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).lessThan(cstTab), w);
+			// Re-initialize all variables of the i_th segment
 			column.get(i).recharge();
 		}
 		
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
 		return result;
 	}
 
-	private long[] greaterThan(long[] cstTab)
+	/*** CORE FUNCTION OF THE QUERY "X > cst" ***/
+	private BitVector greaterThan(long[] cstTab)
 	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column.get(i).greaterThan(cstTab);
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).greaterThan(cstTab), w);
+			// Re-initialize all variables of the i_th segment
 			column.get(i).recharge();
 		}
 		
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
 		return result;
 	}
 	
-	private long[] between(long[] cstTab1, long[] cstTab2)
+	/*** CORE FUNCTION OF THE QUERY "cst1 <= X <= cst2" ***/
+	private BitVector between(long[] cstTab1, long[] cstTab2)
 	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column.get(i).between(cstTab1, cstTab2);
-			column.get(i).recharge2();
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).between(cstTab1, cstTab2), w);
+			// Re-initialize all variables of the i_th segment
+			column.get(i).recharge();
 		}
 		
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
 		return result;
 	}
 
-	private long[] equalTo(long[] cstTab)
+	/*** CORE FUNCTION OF THE QUERY "X = cst" ***/
+	private BitVector equalTo(long[] cstTab)
 	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
 		for (int i = 0; i < Sno; ++i)
 		{
-			result[i] = column.get(i).equalTo(cstTab);
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).equalTo(cstTab), w);
+			// Re-initialize all variables of the i_th segment
 			column.get(i).recharge();
-		}
-
-		return result;
-	}
-
-	private long[] differentTo(long[] cstTab)
-	{
-		for (int i = 0; i < Sno; ++i)
-		{
-			result[i] = column.get(i).differentTo(cstTab);
-			column.get(i).recharge();
-		}
-
-		return result;
-	}
-
-	private long[] lessThanOrEqualTo(long[] cstTab)
-	{
-		for (int i = 0; i < Sno; ++i)
-		{
-			result[i] = column.get(i).lessThanOrEqualTo(cstTab);
-			column.get(i).recharge();
-		}
-
-		return result;
-	}
-
-	private long[] greaterThanOrEqualTo(long[] cstTab)
-	{
-		for (int i = 0; i < Sno; ++i)
-		{
-			result[i] = column.get(i).greaterThanOrEqualTo(cstTab);
-			column.get(i).recharge();
-		}
-
-		return result;
-	}
-
-	private void display(long result, int length)
-	{
-		long mask;
-
-		for (int j = 0; j < length; ++j)
-		{
-			mask = result & ( 1L << (Long.SIZE-1-j) );
-			mask = (mask != 0) ? 1 : 0;
-			System.out.print(mask);
 		}
 		
-		System.out.println();
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
+		return result;
+	}
+
+	/*** CORE FUNCTION OF THE QUERY "X != cst" ***/
+	private BitVector differentTo(long[] cstTab)
+	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
+		for (int i = 0; i < Sno; ++i)
+		{
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).differentTo(cstTab), w);
+			// Re-initialize all variables of the i_th segment
+			column.get(i).recharge();
+		}
+		
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
+		return result;
+	}
+
+	/*** CORE FUNCTION OF THE QUERY "X <= cst" ***/
+	private BitVector lessThanOrEqualTo(long[] cstTab)
+	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
+		for (int i = 0; i < Sno; ++i)
+		{
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).lessThanOrEqualTo(cstTab), w);
+			// Re-initialize all variables of the i_th segment
+			column.get(i).recharge();
+		}
+		
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
+		return result;
+	}
+
+	/*** CORE FUNCTION OF THE QUERY "X >= cst" ***/
+	private BitVector greaterThanOrEqualTo(long[] cstTab)
+	{
+		// Creation of the Bit Vector that will contain all results
+		BitVector result = new BitVector();
+		
+		for (int i = 0; i < Sno; ++i)
+		{
+			// Append the result of the query on the i_th segment to the Bit Vector
+			result.append(column.get(i).greaterThanOrEqualTo(cstTab), w);
+			// Re-initialize all variables of the i_th segment
+			column.get(i).recharge();
+		}
+		
+		// Remove the useless zero-padding
+		result.deleteEnd(w - nbDataLastSegment);
+		// Return the result of the query
+		return result;
 	}
 
 	/**
-	 * Decodes complex queries into elementary queries and performs them on the column of the instance of the BitWeavingH object.<br>
-	 * Decodes the String "query" into elements of the enum Query.<br>
-	 * Returns the result bit vector<br>
-	 * @param query: String that represents the complex query ej: "LESS THAN 1000 OR EQUAL 2000 AND DIFFERENT 0"
-	 * @throws InvalidParameterException
-	 * @author William Gorge and Benoit Sordet
+	 * Returns the name of the column
+	 * @return column.name
 	 */
-	public long[] complexQuery(String query) throws InvalidParameterException 
-	{
-		// Result bit vector
-		long[] BVout = null;
+	public String getName() {
+		return name;
+	}
 
-		// Operator for the next instruction
-		Operator op = null;
+	public int getSizeOfOneDatum() {
+		return k;
+	}
 
-		// Query of the next instruction
-		Query q = null;
+	public int getSizeOfProcessorWord() {
+		return w;
+	}
 
-		// Constant of the next instruction
-		Integer cst = null;
-
-		// Index of this constant in the query string
-		int cstIndex = 0;
-
-		// Boolean that indicates if it is the first instruction
-		boolean first = true;
-
-		// Splits the query into sets of instructions. The separator is the constants numbers given
-		String[] instructions = query.split("\\d+");
-
-		// Itterating on this instructions
-		for(int i = 0; i < instructions.length; ++i){
-
-			cstIndex += instructions[i].length();
-
-			// Decoding operator
-			if(instructions[i].startsWith(" AND") && !first) {
-				op = Operator.AND;
-			}
-			else if(instructions[i].startsWith(" OR") && !first) {
-				op = Operator.OR;
-			}
-
-			// Decoding query
-			if(instructions[i].contains("DIFFERENT")) {
-				q = Query.DIFFERENT;
-			}
-			else if(instructions[i].contains("EQUAL")) {
-				q = Query.EQUAL;
-			}
-			else if(instructions[i].contains("LESS THAN")) {
-				q = Query.LESS_THAN;
-			}
-			else if(instructions[i].contains("LESS THAN OR EQUAL TO")) {
-				q = Query.LESS_THAN_OR_EQUAL_TO;
-			}
-			else if(instructions[i].contains("GREATER THAN")) {
-				q = Query.GREATER_THAN;
-			}
-			else if(instructions[i].contains("GREATER THAN OR EQUAL TO")) {
-				q = Query.GREATER_THAN_OR_EQUAL_TO;
-			}
-			else throw new InvalidParameterException("\"" + instructions[i] + "\"" + ": Syntax error for query");
-
-			// Find the constant with its begin and end index in the String
-			int endCstIndex = query.length();
-			if(i+1 < instructions.length) endCstIndex = query.indexOf(instructions[i+1]);
-
-			cst = Integer.decode(query.substring(cstIndex, endCstIndex));
-
-			cstIndex += cst.toString().length();
-
-			// Case when we have to do a query and add it logically (AND, OR) to the global result
-			// We check if an operator, a constant and a query has been found
-			if(op!=null && q!= null && cst != null && BVout != null) {
-
-				// Performing query
-				long[] newBVout = query(q, cst);
-
-				// Adding logically this query to the global result
-				switch(op) {
-
-				case AND:
-					for(int n = 0; n < BVout.length; ++n) {
-						BVout[n] &= newBVout[n];
-					}
-					break;
-
-				case OR:
-					for(int n = 0; n < BVout.length; ++n) {
-						BVout[n] |= newBVout[n];
-					}
-					break;
-
-				default:
-					throw new InvalidParameterException("\"" + instructions[i] + "\"" + ": Error for this query");
-				}
-
-				// Invalidate the used query, operator and constant
-				op = null;
-				q = null;
-				cst = null;
-			}
-			// Case when just a query has to be done (first instruction)
-			// We check if a constant and a query has been found
-			else if(q!= null && cst != null && first) {
-
-				// Perform the first query
-				BVout = query(q, cst);
-
-				// Invalidate the used query and constant
-				first = false;
-				op = null;
-				q = null;
-				cst = null;
-			}
+	public void printProcessorWords() {
+		
+		// Itteration on all the segment
+		for(int i = 0; i < column.size(); ++i) {
+			
+			System.out.println("Processor Words for segment " + (i + 1) + ":");
+			
+			// Gets the processor words
+			long[] processorWords = column.get(i).getProcessorWords();
+			
+			// Display them
+			for(int j = 0; j < processorWords.length; ++j)
+				System.out.println("	" + longtobitsString(processorWords[j]).substring(0,w));
+			
+			System.out.println();
 		}
-
-		return BVout;
+	}
+	
+	/**
+	 * For display. Returns the binary string with zeros of the long l
+	 * This is a little modification of Long.toBinaryString(long)
+	 * @param long l: long to convert to a string of bits
+	 * @author William Gorge
+	 */
+	private String longtobitsString(long l){
+		String s = "";
+		for(int i = 0; i < Long.numberOfLeadingZeros(l); ++i) {
+			s += "0";
+		}
+		if(l != 0) s += Long.toBinaryString(l);
+		return s;
 	}
 }
